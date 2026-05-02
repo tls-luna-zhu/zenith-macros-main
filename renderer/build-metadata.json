@@ -1,0 +1,11 @@
+{
+  "version": "1.2.3",
+  "watermark": "zen-1.2.3-nogit-moo4kz64-0ffc1b",
+  "generatedAt": "2026-05-02T09:14:31.613Z",
+  "criticalHashes": {
+    "macros/engine.js": "2381c22d5cc3797525bdb365c895f3a8da1a43360736ee61bc32c6bc6a8a51bb",
+    "macros/input.js": "01c5d30350fe5894252ddc3b04bce9634d4f96399ece29db6686d6f1329830a3",
+    "macros/triggerbot.js": "75b35d3aff2b8d3d7f11432e4e3506ddb1fe0aad1e14185eccfb1b5214baec70",
+    "renderer/index.html": "5d2144d67852c9abf1325bff9e3e987f284e899a0d2a94c81f140f2f185e1687"
+  }
+}

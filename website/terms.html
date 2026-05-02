@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — Zenith Macros</title>
+  <meta name="description" content="ZenithMacros Terms of Service — rules governing your use of the software and services.">
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#04040a;--bg2:#07070e;--surf:#0c0c14;
+      --card:#101018;--card2:#161621;--card3:#1c1c29;
+      --bdr:#1c1c2a;--bdr2:#272738;--bdr3:#333348;
+      --accent:#7c3aed;--a2:#9333ea;--a3:#a855f7;--a4:#c084fc;
+      --glo:rgba(124,58,237,.13);--gbdr:rgba(168,85,247,.35);
+      --t0:#f1f0fa;--t1:#9898b2;--t2:#5a5a72;--t3:#2e2e3c;
+      --rad:10px;--rad-lg:16px;--rad-xl:22px;
+      --ease-out:cubic-bezier(.16,1,.3,1);
+      --tr:.22s ease;
+      --mono:'JetBrains Mono',monospace;
+    }
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    body{
+      background:var(--bg);color:var(--t0);
+      font-family:'Space Grotesk',system-ui,sans-serif;
+      font-size:15px;line-height:1.65;overflow-x:hidden;
+    }
+    a{text-decoration:none;color:var(--a3)}
+    a:hover{color:var(--a4)}
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+
+    /* ── Noise + orbs ── */
+    body::before{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      opacity:.028;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-size:200px 200px;mix-blend-mode:overlay;
+    }
+    .bg-ambience{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+    .bg-orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;animation:orbDrift linear infinite alternate}
+    .bg-orb.o1{width:600px;height:600px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(90,35,185,.3),transparent 65%);animation-duration:22s}
+    .bg-orb.o2{width:700px;height:700px;right:-240px;top:-150px;background:radial-gradient(circle,rgba(115,45,200,.2),transparent 65%);animation-duration:28s}
+    .bg-orb.o3{width:480px;height:480px;left:35%;bottom:-180px;background:radial-gradient(circle,rgba(80,30,160,.18),transparent 65%);animation-duration:18s}
+    .bg-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(rgba(168,100,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(168,100,255,.8) 1px,transparent 1px);background-size:72px 72px}
+    @keyframes orbDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(20px,-18px) scale(1.04)}}
+
+    /* ── Floating nav ── */
+    #topnav{
+      position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:200;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      padding:0 20px;height:50px;
+      width:calc(100% - 40px);max-width:1100px;
+      background:rgba(8,8,14,.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      border:1px solid rgba(100,60,200,.2);border-radius:14px;
+      box-shadow:0 8px 36px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.03) inset;
+      transition:background .3s ease,border-color .3s ease;
+    }
+    #topnav.scrolled{background:rgba(6,6,12,.9);border-color:rgba(124,58,237,.28)}
+    .nav-logo{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.01em;flex-shrink:0;color:var(--t0)}
+    .nav-logo img{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(168,85,247,.5))}
+    .nav-links{display:flex;align-items:center;gap:22px;list-style:none;flex:1;justify-content:center}
+    .nav-links a{font-size:13px;font-weight:500;color:var(--t2);transition:color var(--tr)}
+    .nav-links a:hover{color:var(--t0)}
+    .nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:var(--rad);font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all var(--tr);white-space:nowrap;text-decoration:none}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--a3));color:#fff;box-shadow:0 6px 22px rgba(124,58,237,.38)}
+    .btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);color:#fff}
+    .btn-ghost{background:rgba(255,255,255,.03);border:1px solid var(--bdr2);color:var(--t1)}
+    .btn-ghost:hover{border-color:var(--gbdr);color:var(--t0);background:rgba(168,85,247,.06)}
+
+    /* ── Hero ── */
+    .hero{
+      padding:130px 44px 64px;text-align:center;position:relative;
+      border-bottom:1px solid var(--bdr);
+    }
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;
+      background:var(--glo);border:1px solid var(--gbdr);
+      font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:.06em;text-transform:uppercase;
+      margin-bottom:20px;
+    }
+    .badge-dot{width:5px;height:5px;border-radius:50%;background:var(--a4)}
+    .hero-title{
+      font-size:clamp(36px,5vw,56px);font-weight:800;letter-spacing:-.04em;line-height:1.08;
+      margin-bottom:16px;
+    }
+    .hero-title .hi{
+      background:linear-gradient(118deg,#e9d5ff,#a855f7 50%,#7c3aed);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .hero-meta{font-size:13px;color:var(--t2);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+    .hero-meta span{display:flex;align-items:center;gap:5px}
+    .hero-meta .sep{color:var(--t3)}
+
+    /* ── Page layout ── */
+    .page-wrap{max-width:1100px;margin:0 auto;padding:56px 44px 100px;display:grid;grid-template-columns:220px 1fr;gap:56px}
+
+    /* ── ToC sidebar ── */
+    .toc{position:sticky;top:80px;align-self:start;padding-bottom:40px}
+    .toc-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);margin-bottom:14px}
+    .toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+    .toc-list a{
+      display:block;font-size:12.5px;font-weight:500;color:var(--t2);
+      padding:5px 10px;border-left:2px solid var(--bdr2);
+      transition:all var(--tr);border-radius:0 4px 4px 0;
+    }
+    .toc-list a:hover{color:var(--t0);border-left-color:var(--a3);background:rgba(168,85,247,.05)}
+    .toc-list a.active{color:var(--a4);border-left-color:var(--a3);background:rgba(168,85,247,.08)}
+    .toc-divider{height:1px;background:var(--bdr);margin:14px 10px}
+    .toc-back{
+      display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+      color:var(--t2);margin-top:20px;padding:6px 10px;border-radius:var(--rad);
+      border:1px solid var(--bdr);transition:all var(--tr);
+    }
+    .toc-back:hover{color:var(--t0);border-color:var(--bdr2);background:rgba(255,255,255,.03)}
+
+    /* ── Content ── */
+    .content{min-width:0}
+    .alert-card{
+      background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.2);border-radius:var(--rad-lg);
+      padding:18px 22px;margin-bottom:40px;display:flex;gap:14px;align-items:flex-start;
+    }
+    .alert-icon{
+      width:32px;height:32px;flex-shrink:0;border-radius:8px;
+      background:rgba(234,179,8,.12);display:flex;align-items:center;justify-content:center;
+      margin-top:1px;
+    }
+    .alert-icon svg{color:#facc15}
+    .alert-body{flex:1}
+    .alert-body strong{color:#fde68a;font-size:13px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;display:block;margin-bottom:5px}
+    .alert-body p{font-size:13.5px;color:#fde68a;line-height:1.7;margin:0;opacity:.9}
+
+    .section{margin-bottom:48px;scroll-margin-top:88px}
+    .sec-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
+    .sec-num{
+      width:28px;height:28px;flex-shrink:0;border-radius:7px;
+      background:rgba(124,58,237,.15);border:1px solid rgba(168,85,247,.2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:11px;font-weight:700;color:var(--a4);font-family:var(--mono);
+      margin-top:3px;
+    }
+    .sec-title{font-size:20px;font-weight:700;letter-spacing:-.025em;color:var(--t0)}
+    .sec-divider{height:1px;background:var(--bdr);margin-bottom:20px;margin-left:42px}
+
+    h3{font-size:13.5px;font-weight:700;color:var(--t0);margin:22px 0 8px;letter-spacing:.01em;text-transform:uppercase}
+    p{color:var(--t1);margin-bottom:13px;font-size:14px;line-height:1.8}
+    ul,ol{color:var(--t1);padding-left:20px;margin-bottom:14px}
+    li{font-size:14px;line-height:1.8;margin-bottom:5px}
+    li::marker{color:var(--a3)}
+    strong{color:var(--t0);font-weight:600}
+
+    .callout{
+      border-radius:var(--rad);padding:14px 18px;margin-bottom:16px;
+      display:flex;gap:12px;align-items:flex-start;
+    }
+    .callout-icon{width:18px;height:18px;flex-shrink:0;margin-top:1px}
+    .callout p{margin:0;font-size:13.5px;line-height:1.7}
+    .callout.info{background:rgba(124,58,237,.07);border:1px solid rgba(168,85,247,.18)}
+    .callout.info p{color:#c4b5fd}
+    .callout.info .callout-icon{color:#a855f7}
+    .callout.warn{background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.22)}
+    .callout.warn p{color:#fde68a}
+    .callout.warn .callout-icon{color:#facc15}
+    .callout.neutral{background:rgba(255,255,255,.03);border:1px solid var(--bdr2)}
+    .callout.neutral p{color:var(--t1)}
+    .callout.neutral .callout-icon{color:var(--t2)}
+
+    /* Legal legalese block */
+    .legal-block{
+      background:var(--card);border:1px solid var(--bdr2);border-radius:var(--rad);
+      padding:16px 20px;margin-bottom:16px;
+    }
+    .legal-block p{font-size:12.5px;color:var(--t2);line-height:1.75;margin:0;font-family:var(--mono);letter-spacing:.01em}
+
+    /* ── Footer ── */
+    footer{border-top:1px solid var(--bdr);padding:36px 44px;margin-top:0}
+    .ft-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+    .ft-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--t2)}
+    .ft-logo img{width:20px;height:20px;object-fit:contain;opacity:.6}
+    .ft-links{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .ft-links a{font-size:12px;color:var(--t2);transition:color var(--tr)}
+    .ft-links a:hover{color:var(--t0)}
+
+    /* ── Responsive ── */
+    @media(max-width:860px){
+      .page-wrap{grid-template-columns:1fr;gap:0;padding:36px 20px 64px}
+      .toc{display:none}
+      .hero{padding:110px 24px 48px}
+      footer{padding:28px 24px}
+      #topnav{padding:0 16px}
+      .nav-links{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-ambience">
+  <div class="bg-orb o1"></div>
+  <div class="bg-orb o2"></div>
+  <div class="bg-orb o3"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- NAV -->
+<nav id="topnav">
+  <a href="index.html" class="nav-logo">
+    <img src="logo-transparent.png" alt="Zenith">
+    Zenith Macros
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="terms.html" style="color:var(--a3)">Terms of Service</a></li>
+    <li><a href="refund.html">Refund Policy</a></li>
+  </ul>
+  <div class="nav-r">
+    <a href="dashboard.html" class="btn btn-ghost">Dashboard</a>
+    <a href="https://discord.gg/tbT5Zjg7dE" target="_blank" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.015.04.033.05a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Discord
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><div class="badge-dot"></div>Legal Document</div>
+  <div class="hero-title">Terms of <span class="hi">Service</span></div>
+  <div class="hero-meta">
+    <span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Last updated April 19, 2026
+    </span>
+    <span class="sep">·</span>
+    <span>Effective upon purchase or download</span>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="page-wrap">
+
+  <!-- Sidebar ToC -->
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <ul class="toc-list">
+      <li><a href="#acceptance" class="active">1. Acceptance</a></li>
+      <li><a href="#license">2. License Grant</a></li>
+      <li><a href="#billing">3. Billing & Access</a></li>
+      <li><a href="#acceptable-use">4. Acceptable Use</a></li>
+      <li><a href="#disclaimer">5. Disclaimer</a></li>
+      <li><a href="#liability">6. Limitation of Liability</a></li>
+      <li><a href="#ip">7. Intellectual Property</a></li>
+      <li><a href="#termination">8. Termination</a></li>
+      <li><a href="#changes">9. Changes to Terms</a></li>
+      <li><a href="#governing-law">10. Governing Law</a></li>
+      <li><a href="#contact">11. Contact</a></li>
+    </ul>
+    <div class="toc-divider"></div>
+    <a href="index.html" class="toc-back">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3L5 8l5 5"/></svg>
+      Back to home
+    </a>
+  </aside>
+
+  <!-- Main content -->
+  <main class="content">
+
+    <div class="alert-card">
+      <div class="alert-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="alert-body">
+        <strong>Important Notice</strong>
+        <p>By purchasing, downloading, or using ZenithMacros, you agree to these Terms of Service in full. If you do not agree, do not use this software.</p>
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <div class="section" id="acceptance">
+      <div class="sec-header">
+        <div class="sec-num">01</div>
+        <div class="sec-title">Acceptance of Terms</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>These Terms of Service ("Terms") govern your access to and use of ZenithMacros software ("Software"), the ZenithMacros website ("Site"), and any related services provided by ZenithMacros ("we," "us," or "our").</p>
+      <p>By completing a purchase, downloading the Software, or activating a license key, you ("User") confirm that you have read, understood, and agree to be bound by these Terms, along with our <a href="refund.html">Refund Policy</a>.</p>
+    </div>
+
+    <!-- 2 -->
+    <div class="section" id="license">
+      <div class="sec-header">
+        <div class="sec-num">02</div>
+        <div class="sec-title">License Grant</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>Subject to these Terms and payment of the applicable fee, we grant you a limited, non-exclusive, non-transferable, revocable license to:</p>
+      <ul>
+        <li>Install and use the Software on <strong>one (1) personal Windows device</strong> per active license key</li>
+        <li>Use the Software solely for personal, non-commercial purposes</li>
+      </ul>
+      <p>This license does <strong>not</strong> include the right to:</p>
+      <ul>
+        <li>Share, resell, sublicense, or distribute your license key or the Software to any third party</li>
+        <li>Reverse engineer, decompile, disassemble, or modify the Software</li>
+        <li>Use the Software on behalf of a commercial service, server, or business</li>
+        <li>Remove or alter any proprietary notices, watermarks, or labels in the Software</li>
+      </ul>
+    </div>
+
+    <!-- 3 -->
+    <div class="section" id="billing">
+      <div class="sec-header">
+        <div class="sec-num">03</div>
+        <div class="sec-title">Billing and Access</div>
+      </div>
+      <div class="sec-divider"></div>
+
+      <h3>3.1 — Plans</h3>
+      <p>ZenithMacros is available as <strong>Monthly</strong> access (recurring) or <strong>Lifetime</strong> access (one-time payment). Pricing is displayed at checkout and may change at any time with reasonable notice.</p>
+
+      <h3>3.2 — Auto-Renewal</h3>
+      <p>Monthly plans automatically renew at the end of each billing period unless cancelled. By providing payment information, you authorize recurring charges for Monthly if selected. Lifetime is billed once and does not renew.</p>
+
+      <h3>3.3 — Cancellation</h3>
+      <p>You may cancel Monthly at any time through your account dashboard. Upon cancellation, your license remains active through the end of the current paid period. No pro-rated refunds are issued for partial periods — see our <a href="refund.html">Refund Policy</a> for full details.</p>
+
+      <h3>3.4 — Failed Payments</h3>
+      <p>If a payment fails, your license may be suspended until the balance is settled. We reserve the right to terminate licenses on accounts with repeated failed payments or chargebacks.</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="section" id="acceptable-use">
+      <div class="sec-header">
+        <div class="sec-num">04</div>
+        <div class="sec-title">Acceptable Use</div>
+      </div>
+      <div class="sec-divider"></div>
+      <div class="callout neutral">
+        <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p>ZenithMacros is a fully external automation tool intended for personal use. <strong>You are solely responsible for how you use this Software.</strong></p>
+      </div>
+      <p>You agree not to use the Software to:</p>
+      <ul>
+        <li>Violate any applicable law or regulation</li>
+        <li>Harm, threaten, or harass other players or individuals</li>
+        <li>Exploit bugs or vulnerabilities in any game server or platform in ways that damage others</li>
+        <li>Circumvent detection systems in ways that could harm a platform or its users</li>
+      </ul>
+      <div class="callout warn">
+        <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p>You acknowledge that using macros or automation tools may violate the terms of service of individual Minecraft servers or platforms. <strong>We accept no liability for any actions taken by server operators, game platforms, or other parties as a result of your use of this Software.</strong></p>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="section" id="disclaimer">
+      <div class="sec-header">
+        <div class="sec-num">05</div>
+        <div class="sec-title">Disclaimer of Warranties</div>
+      </div>
+      <div class="sec-divider"></div>
+      <div class="legal-block">
+        <p>THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+      </div>
+      <p>We do not warrant that:</p>
+      <ul>
+        <li>The Software will be uninterrupted, error-free, or completely secure</li>
+        <li>The Software will remain undetected by any specific game's anti-cheat system</li>
+        <li>The Software will be compatible with all hardware or software configurations</li>
+      </ul>
+      <p>Game developers and server operators may update their detection systems at any time. We make no guarantees regarding the ongoing detectability status of the Software.</p>
+    </div>
+
+    <!-- 6 -->
+    <div class="section" id="liability">
+      <div class="sec-header">
+        <div class="sec-num">06</div>
+        <div class="sec-title">Limitation of Liability</div>
+      </div>
+      <div class="sec-divider"></div>
+      <div class="legal-block">
+        <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, ZENITHMACROS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO THOSE DESCRIBED BELOW.</p>
+      </div>
+      <p>Excluded damages include but are not limited to:</p>
+      <ul>
+        <li>Loss of game progress, accounts, or in-game assets</li>
+        <li>Account bans or suspensions on any platform</li>
+        <li>Lost profits, revenue, or data</li>
+        <li>Damages resulting from unauthorized access to your computer</li>
+      </ul>
+      <p>In no event shall our total liability to you exceed the amounts paid by you to ZenithMacros in the <strong>twelve (12) months</strong> preceding the claim.</p>
+    </div>
+
+    <!-- 7 -->
+    <div class="section" id="ip">
+      <div class="sec-header">
+        <div class="sec-num">07</div>
+        <div class="sec-title">Intellectual Property</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>All content, software code, designs, logos, and trademarks associated with ZenithMacros are the exclusive property of ZenithMacros and are protected by applicable intellectual property laws.</p>
+      <p>You may not reproduce, distribute, or create derivative works from any part of the Software or Site without prior written consent.</p>
+    </div>
+
+    <!-- 8 -->
+    <div class="section" id="termination">
+      <div class="sec-header">
+        <div class="sec-num">08</div>
+        <div class="sec-title">Termination</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>We reserve the right to suspend or terminate your license and access to the Software at any time, without notice, if we determine that you have violated these Terms.</p>
+      <p>Upon termination, all rights granted under these Terms immediately cease, and you must destroy all copies of the Software in your possession. Provisions that by their nature should survive termination — including Sections 5, 6, and 7 — shall survive.</p>
+    </div>
+
+    <!-- 9 -->
+    <div class="section" id="changes">
+      <div class="sec-header">
+        <div class="sec-num">09</div>
+        <div class="sec-title">Changes to Terms</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>We reserve the right to modify these Terms at any time. When we make changes, we will update the "Last updated" date at the top of this page. Continued use of the Software after changes constitutes your acceptance of the revised Terms.</p>
+      <p>If you disagree with the updated Terms, you must stop using the Software and cancel Monthly billing if active.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="section" id="governing-law">
+      <div class="sec-header">
+        <div class="sec-num">10</div>
+        <div class="sec-title">Governing Law</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>These Terms are governed by and construed in accordance with applicable law. Any disputes arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of courts in the applicable jurisdiction.</p>
+    </div>
+
+    <!-- 11 -->
+    <div class="section" id="contact">
+      <div class="sec-header">
+        <div class="sec-num">11</div>
+        <div class="sec-title">Contact</div>
+      </div>
+      <div class="sec-divider"></div>
+      <p>If you have questions about these Terms, please reach out through our <a href="https://discord.gg/tbT5Zjg7dE" target="_blank">Discord server</a>. We aim to respond within 24 hours.</p>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-logo">
+      <img src="logo-transparent.png" alt="Zenith">
+      © 2026 Zenith Macros. All rights reserved.
+    </div>
+    <div class="ft-links">
+      <a href="index.html">Home</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="https://discord.gg/tbT5Zjg7dE" target="_blank">Discord</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scrolled nav
+  const nav = document.getElementById('topnav')
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20)
+  }, {passive:true})
+
+  // Active ToC highlight
+  const sections = document.querySelectorAll('.section[id]')
+  const tocLinks = document.querySelectorAll('.toc-list a')
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'))
+        const active = document.querySelector(`.toc-list a[href="#${e.target.id}"]`)
+        if (active) active.classList.add('active')
+      }
+    })
+  }, {rootMargin:'-20% 0px -70% 0px'})
+  sections.forEach(s => observer.observe(s))
+</script>
+</body>
+</html>

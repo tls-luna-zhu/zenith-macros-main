@@ -1,0 +1,8 @@
+# Default owner review
+* @harrisonjonathan05-dev
+
+# High-risk surfaces
+.github/workflows/* @harrisonjonathan05-dev
+server/** @harrisonjonathan05-dev
+discord-bot/** @harrisonjonathan05-dev
+electron/** @harrisonjonathan05-dev

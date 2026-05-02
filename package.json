@@ -1,0 +1,22 @@
+{
+  "name": "zenith-macros",
+  "version": "1.2.3",
+  "description": "ZenithMacros",
+  "scripts": {
+    "start": "node scripts/start.js",
+    "build:metadata": "node scripts/gen-build-metadata.js",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "tauri:build:free": "tauri build --features free_standalone --config src-tauri/tauri.free.conf.json",
+    "release:free:win": "npm run build:metadata && npm run tauri:build:free",
+    "release:win": "npm run build:metadata && npm run tauri:build && node scripts/post-release.js"
+  },
+  "dependencies": {
+    "keysender": "^2.4.0",
+    "node-machine-id": "^1.1.12"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.1",
+    "javascript-obfuscator": "^5.3.0"
+  }
+}

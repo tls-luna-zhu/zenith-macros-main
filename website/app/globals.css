@@ -1,0 +1,112 @@
+:root {
+  --bg: #070709;
+  --card: #14141c;
+  --bdr: #2a2a3d;
+  --accent: #7c3aed;
+  --accent2: #a855f7;
+  --t0: #f3f3f7;
+  --t1: #9a9ab1;
+  --err: #f87171;
+  --rad: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--t0);
+  font-family: "Space Grotesk", system-ui, sans-serif;
+}
+
+a {
+  color: #c4b5fd;
+}
+
+.z-panel {
+  background: rgba(20, 20, 28, 0.92);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  border-radius: var(--rad);
+  padding: 1.25rem 1.5rem;
+}
+
+.z-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  text-decoration: none;
+}
+
+.z-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--bdr);
+  color: var(--t1);
+}
+
+.z-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--bdr);
+  background: #0f0f15;
+  color: var(--t0);
+  font-size: 14px;
+}
+
+.z-err {
+  color: var(--err);
+  font-size: 13px;
+  min-height: 1.25rem;
+}
+
+/* Stripe Element theming */
+.z-stripe-wrap {
+  padding: 1rem;
+  border-radius: var(--rad);
+  background: #0c0c12;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+/* ── Shared animations ─────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Applied to page-level wrappers for entrance */
+.page-enter {
+  animation: fadeUp 0.45s cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* Checkout responsive layout */
+@media (max-width: 680px) {
+  .checkout-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .checkout-sticky {
+    position: static !important;
+  }
+}

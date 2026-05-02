@@ -1,0 +1,2 @@
+"""Admin API blueprint package."""
+

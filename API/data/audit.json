@@ -1,0 +1,14 @@
+[
+  {
+    "ts": 1775235283,
+    "event": "affiliate.created",
+    "discord_id": "338723734263169025",
+    "code": "s7kyqya82j"
+  },
+  {
+    "ts": 1775242079,
+    "event": "hwid.reset",
+    "discord_id": "338723734263169025",
+    "key": "ZNT-0A1C4D3C-B983-46C9"
+  }
+]

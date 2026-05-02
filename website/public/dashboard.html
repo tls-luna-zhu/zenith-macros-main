@@ -1,0 +1,1161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenith Dashboard</title>
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#04040a;--bg2:#07070e;--surf:#0c0c14;
+      --card:#101018;--card2:#161621;--card3:#1c1c29;
+      --bdr:#1c1c2a;--bdr2:#272738;
+      --accent:#7c3aed;--a2:#9333ea;--a3:#a855f7;--a4:#c084fc;
+      --glo:rgba(124,58,237,.13);--gbdr:rgba(168,85,247,.35);
+      --t0:#f1f0fa;--t1:#9898b2;--t2:#5a5a72;--t3:#2e2e3c;
+      --ok:#57db95;--warn:#ffce72;--danger:#f87171;
+      --rad:10px;--rad-lg:16px;--rad-xl:22px;
+      --ease-out:cubic-bezier(.16,1,.3,1);
+      --tr:.22s ease;
+      --mono:'JetBrains Mono',monospace;
+    }
+    html{-webkit-font-smoothing:antialiased;height:100%}
+    body{
+      background:var(--bg);color:var(--t0);
+      font-family:'Space Grotesk',system-ui,sans-serif;
+      font-size:15px;line-height:1.6;overflow-x:hidden;min-height:100vh;
+    }
+    a{text-decoration:none;color:inherit}
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+    body::before{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      opacity:.025;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-size:200px 200px;mix-blend-mode:overlay;
+    }
+
+
+    .bg-ambience{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+    .bg-cursor{position:absolute;inset:-20%;background:radial-gradient(ellipse 80% 70% at var(--cx,72%) var(--cy,18%),rgba(100,38,210,.11),transparent 56%);will-change:background;transition:background 1s ease}
+    .bg-orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.4;animation:orbD linear infinite alternate}
+    .bg-orb.o1{width:600px;height:600px;right:-180px;top:-200px;background:radial-gradient(circle,rgba(90,35,185,.28),transparent 65%);animation-duration:20s}
+    .bg-orb.o2{width:500px;height:500px;left:-140px;bottom:-160px;background:radial-gradient(circle,rgba(80,30,160,.2),transparent 65%);animation-duration:24s}
+    .bg-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(rgba(168,100,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(168,100,255,.8) 1px,transparent 1px);background-size:72px 72px}
+    @keyframes orbD{0%{transform:translate(0,0)}100%{transform:translate(20px,-18px)}}
+
+
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--rad);font-size:13.5px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all var(--tr);white-space:nowrap;text-decoration:none;position:relative}
+    .btn-sm{padding:7px 16px;font-size:12.5px}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--a3));color:#fff;box-shadow:0 6px 22px rgba(124,58,237,.35),0 0 0 1px rgba(222,196,255,.1) inset}
+    .btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 10px 30px rgba(124,58,237,.42)}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-ghost{background:rgba(255,255,255,.03);border:1px solid var(--bdr2);color:var(--t1)}
+    .btn-ghost:hover{border-color:var(--gbdr);color:var(--t0);background:rgba(168,85,247,.06)}
+    .btn-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171}
+    .btn-danger:hover{background:rgba(248,113,113,.18);border-color:rgba(248,113,113,.5)}
+    .btn-icon{width:36px;height:36px;padding:0;justify-content:center;flex-shrink:0}
+    .btn svg{width:15px;height:15px;flex-shrink:0}
+
+
+    #topnav{
+      position:fixed;top:0;left:0;right:0;z-index:200;height:58px;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 28px;
+      background:rgba(6,6,12,.82);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      border-bottom:1px solid rgba(100,60,200,.18);
+      box-shadow:0 4px 28px rgba(0,0,0,.4);
+      transition:border-color .3s ease;
+    }
+    #topnav.scrolled{border-bottom-color:rgba(124,58,237,.28)}
+    .nav-brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--t0);text-decoration:none}
+    .nav-brand svg{flex-shrink:0}
+    .nav-actions{display:flex;align-items:center;gap:8px}
+
+
+    .dash-layout{
+      display:flex;min-height:100vh;padding-top:58px;
+    }
+
+
+    .dash-sidebar{
+      width:260px;flex-shrink:0;
+      background:rgba(8,8,14,.75);
+      border-right:1px solid var(--bdr);
+      padding:24px 16px 24px;
+      position:sticky;top:58px;height:calc(100vh - 58px);
+      overflow-y:auto;display:flex;flex-direction:column;gap:0;
+      backdrop-filter:blur(18px);
+    }
+
+
+    .dash-user{display:flex;align-items:center;gap:12px;padding:16px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--rad-lg);margin-bottom:20px}
+    .dash-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid rgba(168,85,247,.35);flex-shrink:0;background:var(--glo)}
+    .dash-user-info{min-width:0;flex:1}
+    .dash-username{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dash-user-sub{font-size:11.5px;color:var(--t2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+    .dash-plan-badge{display:inline-flex;margin-top:5px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.03em}
+    .dash-plan-badge.monthly{color:#ffce72;background:rgba(255,206,114,.1);border:1px solid rgba(255,206,114,.28)}
+    .dash-plan-badge.lifetime{color:#c4b5fd;background:rgba(124,58,237,.14);border:1px solid rgba(168,85,247,.35)}
+    .dash-plan-badge.inactive{color:var(--t2);background:var(--card2);border:1px solid var(--bdr2)}
+
+
+    .dash-status-row{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--rad);margin-bottom:20px;font-size:12.5px;font-weight:600}
+    .ds-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .ds-dot.active{background:var(--ok);box-shadow:0 0 0 3px rgba(87,219,149,.2);animation:dp 2s infinite}
+    .ds-dot.inactive{background:var(--t3)}
+    @keyframes dp{0%,100%{box-shadow:0 0 0 3px rgba(87,219,149,.2)}50%{box-shadow:0 0 0 6px rgba(87,219,149,.05)}}
+
+
+    .dash-login-prompt{padding:14px;background:var(--card);border:1px solid rgba(168,85,247,.25);border-radius:var(--rad-lg);margin-bottom:20px;text-align:center;display:none}
+    .dash-login-prompt p{font-size:12.5px;color:var(--t1);margin-bottom:12px;line-height:1.5}
+    .dash-login-prompt .btn{width:100%;justify-content:center}
+
+
+    .dash-nav{display:flex;flex-direction:column;gap:3px;flex:1}
+    .dash-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rad);font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid transparent;color:var(--t1);transition:all .18s ease;user-select:none}
+    .dash-nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:.7}
+    .dash-nav-item:hover{background:var(--card);color:var(--t0)}
+    .dash-nav-item.on{background:var(--glo);border-color:rgba(168,85,247,.35);color:#f0ecff}
+    .dash-nav-item.on svg{color:var(--a3);opacity:1}
+
+
+    .dash-sb-foot{margin-top:auto;padding-top:20px;border-top:1px solid var(--bdr)}
+    .dash-sb-foot a,
+    .dash-sb-foot button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:var(--rad);font-size:13px;font-weight:500;color:var(--t2);background:none;border:none;cursor:pointer;font-family:inherit;transition:all .18s ease;text-decoration:none}
+    .dash-sb-foot a:hover,
+    .dash-sb-foot button:hover{background:var(--card);color:var(--t0)}
+    .dash-sb-foot svg{width:14px;height:14px;flex-shrink:0}
+
+
+    .dash-main{flex:1;min-width:0;padding:32px 36px;overflow-y:auto}
+
+
+    .dash-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+    .dash-page-title{font-size:22px;font-weight:800;letter-spacing:-.03em}
+    .dash-page-sub{font-size:13.5px;color:var(--t1);margin-top:2px}
+
+
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+    .stat-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:18px 20px;transition:border-color .22s ease}
+    .stat-card:hover{border-color:var(--bdr2)}
+    .stat-card h5{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.55px;color:var(--t2);margin-bottom:8px}
+    .stat-card p{font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+    .stat-card p.ok{color:var(--ok)}
+    .stat-card p.warn{color:var(--warn)}
+    .stat-card p.purple{color:#c4b5fd}
+    .stat-card p.muted{color:var(--t1);font-weight:600;font-size:15px}
+    .stat-card p.mono{font-family:var(--mono);font-size:13.5px;font-weight:500;letter-spacing:0;color:var(--t0)}
+
+
+    .dash-panel{display:none;animation:panelFadeIn .32s var(--ease-out)}
+    .dash-panel.vis{display:block}
+    @keyframes panelFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+
+    .dash-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rad-xl);padding:24px;margin-bottom:20px}
+    .dash-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+    .dash-card-title{font-size:15px;font-weight:700;letter-spacing:-.01em}
+    .dash-card-subtitle{font-size:12.5px;color:var(--t2);margin-top:2px}
+
+
+    .key-display{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid rgba(168,85,247,.25);border-radius:var(--rad);padding:12px 16px;margin-bottom:12px}
+    .key-value{font-family:var(--mono);font-size:14px;color:#c4b5fd;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .key-actions{display:flex;gap:6px;flex-shrink:0}
+
+
+    .kv-table{display:flex;flex-direction:column;gap:0}
+    .kv-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--bdr)}
+    .kv-row:last-child{border-bottom:none}
+    .kv-label{font-size:13px;color:var(--t2);flex-shrink:0}
+    .kv-val{font-size:14px;font-weight:600;text-align:right}
+    .kv-val.mono{font-family:var(--mono);font-size:12.5px;font-weight:400;color:#c4b5fd}
+    .kv-val.ok{color:var(--ok)}
+    .kv-val.warn{color:var(--warn)}
+    .kv-val.muted{color:var(--t2);font-weight:400}
+
+
+    .action-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+    .action-card{background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rad-lg);padding:18px;cursor:pointer;transition:border-color .22s ease,background .22s ease;text-align:left}
+    .action-card:hover{border-color:rgba(168,85,247,.38);background:rgba(100,38,200,.06)}
+    .action-card svg{width:20px;height:20px;color:var(--a4);margin-bottom:10px}
+    .action-card h4{font-size:13.5px;font-weight:700;margin-bottom:3px}
+    .action-card p{font-size:12px;color:var(--t2);line-height:1.5}
+
+
+    .dash-status-msg{font-size:13px;color:var(--t1);padding:10px 14px;background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rad);margin-top:14px;min-height:0;transition:all .3s ease}
+    .dash-status-msg:empty{display:none}
+    .dash-status-msg.ok{color:var(--ok);background:rgba(87,219,149,.06);border-color:rgba(87,219,149,.25)}
+    .dash-status-msg.err{color:var(--danger);background:rgba(248,113,113,.06);border-color:rgba(248,113,113,.25)}
+
+
+    .aff-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+    .aff-stat{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:16px;text-align:center}
+    .aff-stat-val{font-size:22px;font-weight:800;letter-spacing:-.03em}
+    .aff-stat-val.money{color:#c4b5fd}
+    .aff-stat-val.number{color:var(--t0)}
+    .aff-stat-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-top:3px}
+
+
+    .aff-code-badge{font-family:var(--mono);font-size:12px;font-weight:700;color:#c4b5fd;background:rgba(124,58,237,.18);border:1px solid rgba(168,85,247,.35);border-radius:6px;padding:3px 10px;letter-spacing:.5px;flex-shrink:0}
+    .aff-link-row{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid rgba(168,85,247,.28);border-radius:var(--rad);padding:10px 14px}
+    .aff-link-display{font-family:var(--mono);font-size:12.5px;color:#c4b5fd;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+    .aff-link-display:hover{text-decoration:underline;color:#a78bfa}
+
+
+    .aff-chart-wrap{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:16px;margin-bottom:20px}
+    .aff-chart-title{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-bottom:12px}
+    .aff-chart{display:flex;align-items:flex-end;gap:4px;height:72px;border-bottom:1px solid var(--bdr)}
+    .aff-bar{flex:1;border-radius:4px 4px 0 0;min-height:4px;background:linear-gradient(180deg,var(--a3),var(--accent));cursor:default;transition:opacity .2s ease}
+    .aff-bar:hover{opacity:.75}
+
+
+    .aff-sales-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+    .aff-sale-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rad)}
+    .aff-sale-plan{font-size:13px;font-weight:700;text-transform:capitalize}
+    .aff-sale-meta{font-size:11.5px;color:var(--t2);margin-top:2px}
+    .aff-sale-commission{font-size:13px;font-weight:700;color:#c4b5fd;flex-shrink:0}
+
+
+    .cashout-box{background:var(--card2);border:1px solid rgba(168,85,247,.22);border-radius:var(--rad-lg);padding:20px;margin-bottom:14px}
+    .cashout-rules{font-size:12px;color:var(--t2);margin-bottom:16px;line-height:1.6}
+    .cashout-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .cashout-input{background:var(--card);border:1px solid var(--bdr2);border-radius:var(--rad);color:var(--t0);padding:9px 14px;font-size:13.5px;font-family:'Space Grotesk',sans-serif;width:160px;outline:none;transition:border-color .2s ease}
+    .cashout-input:focus{border-color:var(--gbdr)}
+    .cashout-input::placeholder{color:var(--t3)}
+
+
+    .aff-create-box{background:var(--card2);border:1px solid rgba(168,85,247,.22);border-radius:var(--rad-xl);padding:32px;text-align:center}
+    .aff-create-ico{width:56px;height:56px;border-radius:14px;background:var(--glo);border:1px solid var(--gbdr);display:flex;align-items:center;justify-content:center;color:var(--a4);margin:0 auto 18px}
+    .aff-create-ico svg{width:26px;height:26px}
+    .aff-create-box h3{font-size:18px;font-weight:700;margin-bottom:8px}
+    .aff-create-box p{font-size:14px;color:var(--t1);max-width:380px;margin:0 auto 22px;line-height:1.65}
+
+
+    .dl-release-card{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:22px 24px;display:flex;flex-direction:column;gap:14px;transition:border-color .18s}
+    .dl-release-card:hover{border-color:rgba(168,85,247,.4)}
+    .dl-release-card.dl-latest{border-color:rgba(168,85,247,.45);background:linear-gradient(135deg,rgba(168,85,247,.06) 0%,var(--card2) 60%)}
+    .dl-release-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .dl-release-tag{font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--t0)}
+    .dl-release-name{font-size:13px;color:var(--t2);margin-top:3px}
+    .dl-release-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--t2)}
+    .dl-badge-latest{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#c4b5fd}
+    .dl-badge-pre{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,206,114,.08);border:1px solid rgba(255,206,114,.28);color:var(--warn)}
+    .dl-notes{font-size:13px;color:var(--t1);line-height:1.65;white-space:pre-line;max-height:120px;overflow:hidden;position:relative}
+    .dl-notes.expanded{max-height:none}
+    .dl-notes-fade{position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,transparent,var(--card2));pointer-events:none}
+    .dl-notes.expanded .dl-notes-fade{display:none}
+    .dl-assets{display:flex;flex-wrap:wrap;gap:8px}
+    .dl-asset-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:var(--glo);border:1px solid var(--gbdr);border-radius:var(--rad);font-size:13px;font-weight:600;color:var(--a4);text-decoration:none;transition:all .18s;white-space:nowrap}
+    .dl-asset-btn:hover{background:rgba(168,85,247,.25);border-color:var(--a3);color:#f0ecff}
+    .dl-asset-btn svg{width:14px;height:14px;flex-shrink:0}
+    .dl-asset-size{font-size:11px;font-weight:400;color:var(--t2)}
+    .dl-empty{text-align:center;padding:60px 24px;color:var(--t2)}
+    .dl-empty svg{width:40px;height:40px;margin:0 auto 14px;opacity:.4;display:block}
+    .dl-show-more{background:none;border:none;color:var(--a4);font-size:12px;cursor:pointer;padding:4px 0;font-weight:600;margin-top:4px}
+    .dl-show-more:hover{color:#c4b5fd}
+
+
+    .lic-list{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+    .lic-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rad)}
+    .lic-row-left strong{font-size:13px;font-weight:600;display:block;font-family:var(--mono);color:#c4b5fd}
+    .lic-row-left small{font-size:11.5px;color:var(--t2);margin-top:2px;display:block}
+    .lic-row-right{font-size:11.5px;color:var(--t2);flex-shrink:0;text-align:right}
+
+
+    .badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.02em;vertical-align:middle}
+    .badge-ok{color:var(--ok);background:rgba(87,219,149,.1);border:1px solid rgba(87,219,149,.28)}
+    .badge-warn{color:var(--warn);background:rgba(255,206,114,.08);border:1px solid rgba(255,206,114,.25)}
+    .badge-muted{color:var(--t2);background:var(--card2);border:1px solid var(--bdr2)}
+    .badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+
+    .empty-state{text-align:center;padding:48px 24px;color:var(--t2)}
+    .empty-state svg{width:36px;height:36px;margin:0 auto 12px;opacity:.4}
+    .empty-state p{font-size:14px}
+
+
+    .skel{background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200%;animation:skelShimmer 1.4s infinite;border-radius:6px;height:18px}
+    @keyframes skelShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes extrasSlideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes extrasSlideUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-8px)}}
+
+    /* ── Individual Macros animations ── */
+    @keyframes macroCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes ownedCheck{0%{opacity:0;transform:scale(.7)}60%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+
+    .macro-card{animation:macroCardIn .4s var(--ease-out) both}
+    .macro-badge-owned{animation:ownedCheck .4s var(--ease-out) both}
+
+
+    @media(max-width:900px){
+      .dash-sidebar{width:220px}
+      .dash-main{padding:24px 22px}
+      .stat-row{grid-template-columns:1fr 1fr}
+      .aff-stat-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:680px){
+      .dash-layout{flex-direction:column}
+      .dash-sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--bdr);flex-direction:row;flex-wrap:wrap;padding:16px}
+      .dash-user{flex:0 0 100%;margin-bottom:12px}
+      .dash-status-row{flex:0 0 100%;margin-bottom:8px}
+      .dash-nav{flex-direction:row;flex-wrap:wrap;flex:0 0 100%}
+      .dash-nav-item{flex:1;min-width:80px;justify-content:center;font-size:12px}
+      .dash-sb-foot{display:none}
+      .stat-row{grid-template-columns:1fr 1fr}
+      .aff-stat-grid{grid-template-columns:1fr 1fr}
+    }
+    /* ── skeleton loading ─────────────────────────────────────────────── */
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .skeleton{
+      background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);
+      background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;
+      border-radius:var(--rad);pointer-events:none;
+    }
+    .skeleton-text{height:14px;width:60%;margin:6px 0}
+    .skeleton-stat{height:24px;width:50%;margin-top:8px}
+    .skeleton-card{height:120px;border-radius:var(--rad-lg);border:1px solid var(--bdr)}
+  </style>
+</head>
+<body>
+
+<div class="bg-ambience" aria-hidden="true">
+  <div class="bg-cursor" id="bg-cursor"></div>
+  <div class="bg-orb o1"></div>
+  <div class="bg-orb o2"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<nav id="topnav">
+  <a href="/" class="nav-brand">
+    <img src="logo-transparent.png" alt="Zenith" style="width:26px;height:26px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(168,85,247,.45))">
+    Zenith Dashboard
+  </a>
+  <div class="nav-actions">
+    <a href="/" class="btn btn-ghost btn-sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Website
+    </a>
+    <button class="btn btn-ghost btn-sm" id="logout-btn-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Logout
+    </button>
+  </div>
+</nav>
+
+<div class="dash-layout">
+
+
+  <aside class="dash-sidebar">
+
+    <!-- User block -->
+    <div class="dash-user" id="dash-user-block">
+      <img id="user-avatar" src="logo-transparent.png" alt="avatar" class="dash-avatar">
+      <div class="dash-user-info">
+        <div class="dash-username" id="user-name">Loading…</div>
+        <div class="dash-user-sub" id="user-email">Connecting</div>
+        <div class="dash-plan-badge inactive" id="user-plan-badge">—</div>
+      </div>
+    </div>
+
+    <!-- Status row -->
+    <div class="dash-status-row" id="auth-status-row">
+      <div class="ds-dot inactive" id="auth-dot"></div>
+      <span id="auth-status-label" style="color:var(--t2)">Not authenticated</span>
+    </div>
+
+    <!-- Login prompt (shown when not authed) -->
+    <div class="dash-login-prompt" id="login-prompt">
+      <p>Sign in with Discord to view your plan, license, and billing information.</p>
+      <a class="btn btn-primary" href="/api/auth/discord/start">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Login with Discord
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="dash-nav" id="dash-nav">
+      <div class="dash-nav-item on" data-tab="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </div>
+      <div class="dash-nav-item" data-tab="subscription" data-requires-license data-hide-for-lifetime>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Subscription
+      </div>
+      <div class="dash-nav-item" data-tab="affiliate" data-requires-license>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Affiliate
+      </div>
+      <div class="dash-nav-item" data-tab="build" data-requires-license>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Build
+      </div>
+      <div class="dash-nav-item" data-tab="standalone" onclick="onStandaloneTabOpen()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Individual Macros
+      </div>
+      <div class="dash-nav-item" data-tab="actions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Account
+      </div>
+    </nav>
+
+    <!-- Sidebar footer -->
+    <div class="dash-sb-foot">
+      <a href="https://discord.gg/tbT5Zjg7dE">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Discord Support
+      </a>
+      <a href="terms.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Terms of Service
+      </a>
+      <a href="#" id="manage-billing-link" target="_blank" rel="noopener noreferrer" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Manage Billing
+      </a>
+    </div>
+  </aside>
+
+
+  <main class="dash-main">
+
+
+    <div class="dash-panel vis" id="panel-overview">
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">Account Overview</div>
+          <div class="dash-page-sub">Your Zenith Macros account at a glance.</div>
+        </div>
+      </div>
+
+      <!-- skeleton placeholders (visible while loading) -->
+      <div class="stat-row" id="stat-row-skeleton">
+        <div class="stat-card"><h5>Plan</h5><div class="skeleton skeleton-stat"></div></div>
+        <div class="stat-card"><h5>Status</h5><div class="skeleton skeleton-stat"></div></div>
+        <div class="stat-card"><h5>Time Remaining</h5><div class="skeleton skeleton-stat"></div></div>
+        <div class="stat-card"><h5>HWID</h5><div class="skeleton skeleton-stat"></div></div>
+      </div>
+
+      <div class="stat-row" id="stat-row" style="display:none">
+        <div class="stat-card"><h5>Plan</h5><p class="purple" id="hl-plan">—</p></div>
+        <div class="stat-card"><h5>Status</h5><p class="muted" id="hl-status">—</p></div>
+        <div class="stat-card"><h5>Time Remaining</h5><p class="muted" id="hl-remaining">—</p></div>
+        <div class="stat-card"><h5>HWID</h5><p class="muted" id="hl-hwid">—</p></div>
+      </div>
+
+
+      <div id="no-license-banner" style="display:none">
+        <div style="background:linear-gradient(135deg,rgba(168,85,247,.1) 0%,rgba(168,85,247,.04) 100%);border:1px solid rgba(168,85,247,.35);border-radius:var(--rad-xl);padding:32px 28px;margin-bottom:0">
+          <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
+            <div style="width:48px;height:48px;border-radius:14px;background:var(--glo);border:1px solid var(--gbdr);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--a4)" stroke-width="1.8" width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div style="flex:1;min-width:220px">
+              <div style="font-size:17px;font-weight:800;margin-bottom:6px;color:var(--t0)">No license linked to your account</div>
+              <div style="font-size:13.5px;color:var(--t1);line-height:1.65;margin-bottom:22px">If you're an existing customer, you can claim your legacy key below or through our Discord bot. New here? Head to pricing to get access.</div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px">
+                <button class="btn btn-primary" id="no-lic-claim-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                  Claim Legacy Key
+                </button>
+                <a href="https://discord.gg/tbT5Zjg7dE" target="_blank" class="btn btn-ghost">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                  Use <code style="font-family:monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px">/claimkey</code> on Discord
+                </a>
+                <a href="/index.html#pricing" class="btn btn-ghost">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  View Pricing
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inline claim form -->
+          <div id="no-lic-claim-form" style="display:none;margin-top:22px;padding-top:20px;border-top:1px solid rgba(168,85,247,.2)">
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--t1)">Enter your legacy key (<span style="font-family:monospace;color:var(--a4)">ZNTH…</span>) to link it to this account:</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <input id="no-lic-key-input" placeholder="ZNTH…" autocomplete="off" spellcheck="false"
+                style="flex:1;min-width:220px;background:rgba(255,255,255,0.06);border:1px solid rgba(168,85,247,.3);border-radius:8px;color:var(--t1);font-family:monospace;font-size:13px;padding:9px 14px;outline:none;transition:border-color .2s">
+              <button class="btn btn-primary" id="no-lic-claim-submit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                Claim Key
+              </button>
+            </div>
+            <div class="dash-status-msg" id="no-lic-claim-status" style="margin-top:10px"></div>
+            <div style="margin-top:12px;padding:12px 14px;background:rgba(168,85,247,.06);border-radius:8px;border:1px solid rgba(168,85,247,.15)">
+              <div style="font-size:12px;font-weight:700;color:var(--a4);margin-bottom:4px">Prefer Discord?</div>
+              <div style="font-size:12px;color:var(--t2);line-height:1.6">Join our server and run <span style="font-family:monospace;background:rgba(255,255,255,.06);padding:1px 6px;border-radius:4px;color:var(--t1)">/claimkey ZNTH…</span> — the bot will link your key instantly.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- License key quick access -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">License Key</div>
+            <div class="dash-card-subtitle">Your access key for the Zenith Macros client</div>
+          </div>
+        </div>
+        <div class="key-display">
+          <div class="key-value" id="ov-key">Loading…</div>
+          <div class="key-actions">
+            <button class="btn btn-ghost btn-sm" id="copy-key-btn" title="Copy key">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+            <button class="btn btn-ghost btn-sm" id="reveal-key-btn" title="Reveal full key">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Reveal
+            </button>
+          </div>
+        </div>
+        <div class="kv-table">
+          <div class="kv-row"><span class="kv-label">Plan</span><span class="kv-val" id="ov-plan">—</span></div>
+          <div class="kv-row"><span class="kv-label">Status</span><span class="kv-val" id="ov-status">—</span></div>
+          <div class="kv-row"><span class="kv-label">HWID binding</span><span class="kv-val mono" id="ov-hwid">Unbound</span></div>
+        </div>
+        <div class="dash-status-msg" id="action-status"></div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">Quick Actions</div>
+        </div>
+        <div class="action-grid">
+          <div class="action-card" id="qact-copy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <h4>Copy License Key</h4>
+            <p>Copy your full key to clipboard for use in the client.</p>
+          </div>
+          <div class="action-card" id="qact-hwid">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg>
+            <h4>Reset HWID</h4>
+            <p>Unbind your license from its current machine to activate on a new one.</p>
+          </div>
+          <div class="action-card" id="qact-discord">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <h4>Discord Support</h4>
+            <p>Open a ticket for billing, HWID, or account questions.</p>
+          </div>
+          <div class="action-card" id="qact-affiliate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <h4>Affiliate Program</h4>
+            <p>View your referral stats, commissions, and request a payout.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="dash-panel" id="panel-subscription">
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">Subscription</div>
+          <div class="dash-page-sub">Manage your plan, billing, and upgrades.</div>
+        </div>
+      </div>
+
+      <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="stat-card"><h5>Current Plan</h5><p class="purple" id="sub-plan">—</p></div>
+        <div class="stat-card"><h5 id="sub-next-label">Next Billing</h5><p class="muted" id="sub-next">—</p></div>
+        <div class="stat-card"><h5>Time Remaining</h5><p class="muted" id="sub-remaining">—</p></div>
+      </div>
+
+      <!-- Shown only for monthly users -->
+      <div class="dash-card" id="sub-monthly-only" style="display:none">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Upgrade to Lifetime</div>
+            <div class="dash-card-subtitle">Upgrade from Monthly to Lifetime — pay once, keep forever. Contact us after paying.</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rad-lg);padding:20px">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-bottom:6px">Current Plan</div>
+            <div style="font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px">$5<span style="font-size:13px;font-weight:500;color:var(--t2);letter-spacing:0">/mo</span></div>
+            <div style="font-size:12.5px;color:var(--t2);margin-bottom:16px">Renews automatically · cancel anytime</div>
+            <div style="font-size:12px;color:var(--t2);padding:10px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--bdr)">You are on Monthly.</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid rgba(168,85,247,.35);border-radius:var(--rad-lg);padding:20px;position:relative">
+            <div style="position:absolute;top:14px;right:14px;font-size:9.5px;font-weight:700;color:#c4b5fd;background:rgba(124,58,237,.22);border:1px solid rgba(168,85,247,.38);padding:2px 8px;border-radius:999px">Best value</div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-bottom:6px">Lifetime</div>
+            <div style="font-size:28px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px">$25<span style="font-size:13px;font-weight:500;color:var(--t2);letter-spacing:0"> once</span></div>
+            <div style="font-size:12.5px;color:var(--t2);margin-bottom:16px">Pay once, keep forever</div>
+            <a href="https://discord.gg/tbT5Zjg7dE" class="btn btn-primary btn-sm" style="width:100%;justify-content:center">Open Upgrade Ticket</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shown only for lifetime users -->
+      <div class="dash-card" id="sub-lifetime-only" style="display:none">
+        <div style="display:flex;align-items:center;gap:16px;padding:6px 0">
+          <div style="width:42px;height:42px;border-radius:50%;background:rgba(124,58,237,.18);border:1px solid rgba(168,85,247,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="color:#c4b5fd"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:3px">You have Lifetime access</div>
+            <div style="font-size:12.5px;color:var(--t2)">No billing. No renewals. Full access forever — nothing to manage here.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancel — monthly only, not yet canceled -->
+      <div class="dash-card" id="sub-cancel-card" style="display:none">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Cancel Subscription</div>
+            <div class="dash-card-subtitle">You will keep access until the end of your current billing period.</div>
+          </div>
+          <button class="btn btn-danger btn-sm" id="cancel-btn">Cancel Subscription</button>
+        </div>
+        <div class="dash-status-msg" id="sub-status-msg"></div>
+      </div>
+
+      <!-- Renew — shown when subscription is canceled but still active -->
+      <div class="dash-card sub-renew-card-wrap" id="sub-renew-card" style="display:none;border-color:rgba(168,85,247,.28)">
+        <div class="dash-card-header" style="align-items:flex-start">
+          <div style="display:flex;gap:14px;align-items:flex-start;flex:1;min-width:0">
+            <div style="width:40px;height:40px;flex-shrink:0;border-radius:50%;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;margin-top:2px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17" style="color:#f87171"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div class="dash-card-title" style="color:#f87171">Subscription Canceled</div>
+              <div class="dash-card-subtitle" id="sub-renew-subtitle" style="margin-top:4px">Your subscription has been canceled. You still have access until your billing period ends.</div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="renew-btn" style="flex-shrink:0;margin-left:16px;background:linear-gradient(135deg,#7c3aed,#6d28d9);border-color:rgba(168,85,247,.5)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="margin-right:5px"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Renew Subscription
+          </button>
+        </div>
+        <div style="margin-top:14px;padding:12px 14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:8px;display:flex;align-items:center;gap:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:#f87171;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="sub-renew-access-msg" style="font-size:12.5px;color:var(--t2)">Your access will end at the close of your current billing period.</span>
+        </div>
+        <div class="dash-status-msg" id="sub-renew-msg" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+
+    <div class="dash-panel" id="panel-affiliate">
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">Affiliate Program</div>
+          <div class="dash-page-sub">Earn 20% commission on every sale your referral link drives.</div>
+        </div>
+      </div>
+
+      <!-- Create profile state -->
+      <div id="aff-create-wrap">
+        <div class="aff-create-box">
+          <div class="aff-create-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <h3>Join the affiliate program</h3>
+          <p>Get a unique referral code and start earning 20% commission on every sale. Share your link anywhere and track earnings in real time.</p>
+          <button class="btn btn-primary" id="aff-create-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Create Affiliate Profile
+          </button>
+          <div class="dash-status-msg" id="aff-create-status" style="max-width:400px;margin:14px auto 0;text-align:center"></div>
+        </div>
+      </div>
+
+      <!-- Affiliate dashboard (shown after load) -->
+      <div id="aff-dashboard-wrap" style="display:none">
+
+        <!-- Referral link card -->
+        <div class="dash-card" style="margin-bottom:20px">
+          <div class="dash-card-header">
+            <div class="dash-card-title">Your Referral Link</div>
+            <span class="aff-code-badge" id="aff-code-badge">—</span>
+          </div>
+          <p style="color:var(--t2);font-size:13px;margin:0 0 14px">Share this link — anyone who purchases after clicking it will credit you 20% commission. The referral code is applied automatically at checkout.</p>
+          <div class="aff-link-row">
+            <a id="aff-link-q" href="#" class="aff-link-display">—</a>
+            <button class="btn btn-sm" id="aff-copy-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Link
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="aff-stat-grid">
+          <div class="aff-stat"><div class="aff-stat-val number" id="aff-sales">—</div><div class="aff-stat-label">Total Sales</div></div>
+          <div class="aff-stat"><div class="aff-stat-val money" id="aff-earned">—</div><div class="aff-stat-label">Commission Earned</div></div>
+          <div class="aff-stat"><div class="aff-stat-val money" id="aff-available">—</div><div class="aff-stat-label">Available Balance</div></div>
+          <div class="aff-stat"><div class="aff-stat-val money" id="aff-gross">—</div><div class="aff-stat-label">Gross Revenue</div></div>
+          <div class="aff-stat"><div class="aff-stat-val money" id="aff-pending">—</div><div class="aff-stat-label">Pending Cashout</div></div>
+        </div>
+
+        <!-- Chart -->
+        <div class="aff-chart-wrap">
+          <div class="aff-chart-title">Commission — Recent 14 Days</div>
+          <div class="aff-chart" id="aff-chart"></div>
+        </div>
+
+        <!-- Recent sales -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <div class="dash-card-title">Recent Sales</div>
+          </div>
+          <div id="aff-sales-list" class="aff-sales-list"></div>
+        </div>
+
+        <!-- Cashout -->
+        <div class="cashout-box">
+          <div class="dash-card-title" style="margin-bottom:6px">Request Cashout</div>
+          <div class="cashout-rules">Minimum $15 · Maximum $500 · One request per 5 hours. After submitting, open a ticket in Discord to complete your payout.</div>
+          <div class="cashout-row">
+            <input type="number" id="aff-cashout-amount" class="cashout-input" placeholder="Amount (USD)" min="15" max="500" step="0.01">
+            <button class="btn btn-primary" id="aff-cashout-btn">Request Cashout</button>
+          </div>
+          <div class="dash-status-msg" id="aff-cashout-status" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="dash-panel" id="panel-build">
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">EXE Builder</div>
+          <div class="dash-page-sub">Customize your Zenith Macros EXE — change how it appears on your PC before downloading.</div>
+        </div>
+      </div>
+
+      <!-- Main builder grid -->
+      <div style="display:grid;grid-template-columns:1fr 400px;gap:20px;align-items:start">
+
+        <!-- LEFT — configuration -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Quick Disguise Presets -->
+          <div class="dash-card" style="margin-bottom:0">
+            <div class="dash-card-header" style="margin-bottom:14px">
+              <div>
+                <div class="dash-card-title">Quick Disguise</div>
+                <div class="dash-card-subtitle">Pick a preset to auto-fill all fields below.</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="bld-presets">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Customisation fields -->
+          <div class="dash-card" style="margin-bottom:0">
+            <div class="dash-card-header" style="margin-bottom:18px">
+              <div>
+                <div class="dash-card-title">EXE Metadata</div>
+                <div class="dash-card-subtitle">These values are embedded directly into the file.</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div style="grid-column:1/-1">
+                <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:6px">Filename <span style="color:var(--t3);font-weight:500;text-transform:none;letter-spacing:0">(no extension)</span></label>
+                <input id="bld-filename" type="text" maxlength="60" placeholder="Spotify"
+                  style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;color:var(--t0);font-size:13.5px;padding:10px 14px;outline:none;transition:border-color .2s;box-sizing:border-box"
+                  onfocus="this.style.borderColor='rgba(167,139,250,.5)'" onblur="this.style.borderColor='var(--bdr)'">
+                <div style="font-size:11.5px;color:var(--t3);margin-top:5px">Downloads as <strong id="bld-fname-preview" style="color:var(--t2)">Spotify.exe</strong></div>
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:6px">Display Name</label>
+                <input id="bld-displayname" type="text" maxlength="64" placeholder="Spotify"
+                  style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;color:var(--t0);font-size:13.5px;padding:10px 14px;outline:none;transition:border-color .2s;box-sizing:border-box"
+                  onfocus="this.style.borderColor='rgba(167,139,250,.5)'" onblur="this.style.borderColor='var(--bdr)'">
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:6px">Version</label>
+                <input id="bld-version" type="text" maxlength="20" placeholder="1.2.13.754"
+                  style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;color:var(--t0);font-size:13.5px;padding:10px 14px;outline:none;transition:border-color .2s;box-sizing:border-box"
+                  onfocus="this.style.borderColor='rgba(167,139,250,.5)'" onblur="this.style.borderColor='var(--bdr)'">
+              </div>
+              <div style="grid-column:1/-1">
+                <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:6px">Company Name</label>
+                <input id="bld-company" type="text" maxlength="64" placeholder="Spotify AB"
+                  style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;color:var(--t0);font-size:13.5px;padding:10px 14px;outline:none;transition:border-color .2s;box-sizing:border-box"
+                  onfocus="this.style.borderColor='rgba(167,139,250,.5)'" onblur="this.style.borderColor='var(--bdr)'">
+              </div>
+              <div style="grid-column:1/-1">
+                <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:6px">Description</label>
+                <input id="bld-description" type="text" maxlength="128" placeholder="Spotify - Music for everyone"
+                  style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;color:var(--t0);font-size:13.5px;padding:10px 14px;outline:none;transition:border-color .2s;box-sizing:border-box"
+                  onfocus="this.style.borderColor='rgba(167,139,250,.5)'" onblur="this.style.borderColor='var(--bdr)'">
+              </div>
+            </div>
+          </div>
+
+          <!-- How it works -->
+          <div class="dash-card" style="margin-bottom:0">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+              <div style="width:28px;height:28px;border-radius:8px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg viewBox="0 0 16 16" fill="none" stroke="#a78bfa" stroke-width="1.5" width="13" height="13"><circle cx="8" cy="8" r="7"/><path d="M8 7v4M8 5.5v.5"/></svg>
+              </div>
+              <div class="dash-card-title">How the EXE Builder works</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px;font-weight:800;color:#c4b5fd">1</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px">Filename</div>
+                  <div style="font-size:12.5px;color:var(--t2);line-height:1.5">Controls what the EXE is called in your Downloads folder and on your Desktop. Set it to <code style="font-family:monospace;padding:1px 5px;background:rgba(255,255,255,.07);border-radius:4px">Spotify</code> and the file saves as <code style="font-family:monospace;padding:1px 5px;background:rgba(255,255,255,.07);border-radius:4px">Spotify.exe</code>.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px;font-weight:800;color:#c4b5fd">2</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px">Display Name, Company &amp; Description</div>
+                  <div style="font-size:12.5px;color:var(--t2);line-height:1.5">Shown in <strong style="color:var(--t1)">Task Manager</strong> (Description column), <strong style="color:var(--t1)">File Properties</strong> (right-click → Properties → Details), and the <strong style="color:var(--t1)">Start Menu</strong> search result. All written into the EXE's version resource at build time.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px;font-weight:800;color:#c4b5fd">3</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px">Icon</div>
+                  <div style="font-size:12.5px;color:var(--t2);line-height:1.5">Selecting a disguise preset replaces the icon embedded in the EXE — so File Explorer, the Taskbar, and Alt+Tab all show the preset colour instead of the Zenith icon.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="width:22px;height:22px;border-radius:6px;background:rgba(87,219,149,.1);border:1px solid rgba(87,219,149,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="#57db95" stroke-width="1.5" width="10" height="10"><polyline points="2 6 5 9 10 3"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px">The app itself is unchanged</div>
+                  <div style="font-size:12.5px;color:var(--t2);line-height:1.5">Only the metadata &amp; icon resources are patched. Every macro, keybind, and feature works identically.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end left -->
+
+        <!-- RIGHT — preview + build button -->
+        <div style="display:flex;flex-direction:column;gap:16px;position:sticky;top:90px">
+
+          <!-- Build card -->
+          <div class="dash-card" style="margin-bottom:0">
+            <div class="dash-card-header" style="margin-bottom:16px">
+              <div class="dash-card-title">Build &amp; Download</div>
+            </div>
+            <!-- Icon preview -->
+            <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--card2);border:1px solid var(--bdr);border-radius:10px;margin-bottom:16px">
+              <div id="bld-icon-preview" style="width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(124,58,237,.25);border:1px solid rgba(167,139,250,.3)">⚙️</div>
+              <div>
+                <div id="bld-icon-fname" style="font-size:14px;font-weight:700;color:var(--t0);letter-spacing:-.2px">App.exe</div>
+                <div id="bld-icon-version" style="font-size:12px;color:var(--t2);margin-top:2px">Version 1.0.0.0</div>
+              </div>
+            </div>
+
+            <!-- Build button -->
+            <button id="bld-btn" onclick="buildExe()" style="width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 18px rgba(124,58,237,.35);transition:opacity .15s,transform .15s"
+              onmouseover="this.style.opacity='.88';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform='none'">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77"/><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg>
+              Build &amp; Download
+            </button>
+            <div id="bld-status" style="margin-top:10px;font-size:12.5px;text-align:center;min-height:18px"></div>
+          </div>
+
+          <!-- Live Preview card -->
+          <div class="dash-card" style="margin-bottom:0">
+            <div class="dash-card-title" style="margin-bottom:14px">Live Preview</div>
+
+            <!-- File Explorer row -->
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">File Explorer</div>
+            <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;margin-bottom:14px">
+              <div id="prev-icon-sm" style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;font-size:16px">⚙️</div>
+              <div style="flex:1;min-width:0">
+                <div id="prev-explorer-name" style="font-size:13px;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">App.exe</div>
+                <div style="font-size:11px;color:#64748b;margin-top:1px">Application</div>
+              </div>
+              <div style="font-size:11px;color:#475569;flex-shrink:0" id="prev-size">~30 MB</div>
+            </div>
+
+            <!-- Task Manager row -->
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">Task Manager</div>
+            <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;margin-bottom:14px">
+              <div style="display:grid;grid-template-columns:1fr auto auto;padding:6px 12px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.05);font-size:10px;font-weight:700;color:#475569;letter-spacing:.04em;text-transform:uppercase">
+                <span>Name</span><span style="padding-right:20px">CPU</span><span>Memory</span>
+              </div>
+              <div style="padding:8px 12px">
+                <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div id="prev-tm-icon" style="width:16px;height:16px;border-radius:3px;flex-shrink:0;background:rgba(124,58,237,.4);font-size:9px;display:flex;align-items:center;justify-content:center">⚙</div>
+                    <span id="prev-tm-name" style="font-size:12.5px;color:#e2e8f0;font-weight:600">App.exe</span>
+                  </div>
+                  <span style="font-size:11.5px;color:#64748b;padding-right:20px">0.0%</span>
+                  <span style="font-size:11.5px;color:#64748b">45.2 MB</span>
+                </div>
+                <div id="prev-tm-desc" style="font-size:11px;color:#475569;margin-top:3px;padding-left:24px">App</div>
+              </div>
+            </div>
+
+            <!-- Properties -->
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:8px">File Properties → Details</div>
+            <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden">
+              <div id="prev-props" style="font-size:11.5px">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Queue Sniper extras (kept from old downloads section) -->
+          <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.18);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,.5),transparent)"></div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+                  <span style="font-size:13.5px;font-weight:700;color:var(--t1)">Queue Sniper</span>
+                  <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#c4b5fd;letter-spacing:.04em">Browser Tool</span>
+                </div>
+                <div style="font-size:12px;color:var(--t2);line-height:1.45;max-width:280px">Auto-snipe queue buttons the moment they go live — runs in your browser devtools.</div>
+              </div>
+              <a href="/zenith-queue-sniper.js" download="zenith-queue-sniper.js"
+                style="display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 3px 12px rgba(124,58,237,.3);transition:opacity .15s"
+                onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg>
+                Download
+              </a>
+            </div>
+          </div>
+
+          <!-- DonutSMP Freecam mod -->
+          <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,222,128,.5),transparent)"></div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+                  <span style="font-size:13.5px;font-weight:700;color:var(--t1)">DonutSMP Freecam</span>
+                  <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#86efac;letter-spacing:.04em">Fabric 1.21.11</span>
+                </div>
+                <div style="font-size:12px;color:var(--t2);line-height:1.45;max-width:280px">Freecam mod built for DonutSMP — drag the <code style="font-size:11px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">.jar</code> into your <code style="font-size:11px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px">mods</code> folder.</div>
+              </div>
+              <a href="/donutfreecam-fabric-1.4.0-alpha.3%2Bmc1.21.11.jar" download="donutfreecam-fabric-1.4.0-alpha.3+mc1.21.11.jar"
+                style="display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap;box-shadow:0 3px 12px rgba(34,197,94,.3);transition:opacity .15s"
+                onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1"/></svg>
+                Download
+              </a>
+            </div>
+          </div>
+
+        </div><!-- end right -->
+      </div><!-- end grid -->
+
+      <div class="dash-status-msg" id="bld-error" style="margin-top:16px"></div>
+    </div>
+
+
+
+    <div class="dash-panel" id="panel-standalone">
+      <!-- Header -->
+      <div class="dash-page-header" style="align-items:flex-start">
+        <div style="flex:1">
+          <div class="dash-page-title">Individual Macros</div>
+          <div class="dash-page-sub">One-time purchases. Your existing Zenith key unlocks them instantly.</div>
+        </div>
+        <!-- Cart button -->
+        <button id="sa-cart-btn" onclick="toggleCart()" style="display:none;position:relative;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#c4b5fd;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;flex-shrink:0"
+          onmouseover="this.style.background='rgba(124,58,237,.2)'" onmouseout="this.style.background='rgba(124,58,237,.12)'">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M3 3h2l.4 2M7 13h10l1.4-7H5.4M7 13L5.4 5M7 13l-1.5 4h11"/><circle cx="9" cy="18.5" r="1"/><circle cx="16" cy="18.5" r="1"/></svg>
+          Cart
+          <span id="sa-cart-count" style="position:absolute;top:-6px;right:-6px;background:#7c3aed;color:#fff;font-size:10px;font-weight:800;border-radius:9999px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 4px">0</span>
+        </button>
+      </div>
+
+      <!-- Cart drawer -->
+      <div id="sa-cart-drawer" style="display:none;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:16px;padding:20px 24px;margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;color:#c4b5fd;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M3 3h2l.4 2M7 13h10l1.4-7H5.4M7 13L5.4 5M7 13l-1.5 4h11"/><circle cx="9" cy="18.5" r="1"/><circle cx="16" cy="18.5" r="1"/></svg>
+          Your Cart
+        </div>
+        <div id="sa-cart-items" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Total</div>
+            <div id="sa-cart-total" style="font-size:20px;font-weight:800;color:var(--t1);letter-spacing:-.5px">$0.00</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button onclick="clearCart()" style="padding:8px 14px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--t2);font-size:12px;font-weight:600;cursor:pointer"
+              onmouseover="this.style.background='rgba(255,255,255,.09)'" onmouseout="this.style.background='rgba(255,255,255,.05)'">Clear</button>
+            <button onclick="checkoutCart()" id="sa-checkout-btn" style="padding:8px 20px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(124,58,237,.35);transition:opacity .15s"
+              onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Checkout</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      <div id="standalone-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px"></div>
+
+      <div id="standalone-empty" style="display:none;text-align:center;padding:56px 0;color:var(--t2);font-size:13px">
+        No individual macros available yet. Check back soon.
+      </div>
+
+      <div id="standalone-loading" style="text-align:center;padding:56px 0;color:var(--t3);font-size:13px">
+        <svg style="animation:spin 1s linear infinite;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Loading macros…
+      </div>
+    </div>
+
+
+    <div class="dash-panel" id="panel-actions">
+      <div class="dash-page-header">
+        <div>
+          <div class="dash-page-title">Account</div>
+          <div class="dash-page-sub">Manage your Discord connection and get support.</div>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">Discord Account</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;padding:4px 0 16px">
+          <img id="actions-avatar" src="logo-transparent.png" alt="avatar" style="width:54px;height:54px;border-radius:50%;border:2px solid rgba(124,58,237,0.35);object-fit:cover;flex-shrink:0">
+          <div style="min-width:0">
+            <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="actions-username">—</div>
+            <div style="font-size:12px;color:var(--t2);margin-top:3px">Connected via Discord OAuth</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn btn-ghost btn-sm" href="/api/auth/discord/start" style="display:inline-flex;align-items:center;gap:8px">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            Reconnect Discord
+          </a>
+          <button class="btn btn-ghost btn-sm" id="logout-btn" style="display:inline-flex;align-items:center;gap:8px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            Log Out
+          </button>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">Support</div>
+        </div>
+        <div class="action-grid">
+          <a class="action-card" href="https://discord.gg/tbT5Zjg7dE" style="display:block">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <h4>Open Support Ticket</h4>
+            <p>Get help with billing, license, HWID reset, or any account issue from our team.</p>
+          </a>
+          <a class="action-card" href="https://discord.gg/tbT5Zjg7dE" style="display:block">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.32"/></svg>
+            <h4>HWID Reset Request</h4>
+            <p>Changed machines? Open a ticket and a staff member will reset your HWID after verifying.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="cancel-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,4,10,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s ease">
+  <div style="background:var(--card);border:1px solid var(--bdr2);border-radius:var(--rad-xl);padding:36px 32px;max-width:440px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(168,85,247,.08);position:relative;transform:translateY(12px);transition:transform .28s var(--ease-out)">
+    <div style="width:48px;height:48px;border-radius:50%;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" style="color:#f87171"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <div style="font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px">Cancel subscription?</div>
+    <div style="font-size:13.5px;color:var(--t1);line-height:1.65;margin-bottom:6px">You will keep full access to your license until</div>
+    <div style="font-size:15px;font-weight:700;color:#c4b5fd;margin-bottom:16px" id="cancel-modal-date">—</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:28px">After that date, your license will expire and you will lose access. You can re-subscribe at any time to regain access.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" id="cancel-modal-no" style="min-width:90px">Keep Plan</button>
+      <button class="btn btn-danger" id="cancel-modal-yes" style="min-width:120px">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
+
+<style>
+#cancel-modal.open{opacity:1;pointer-events:all}
+#cancel-modal.open > div{transform:translateY(0)}
+</style>
+
+<script>
+/* ── Local-dev OAuth relay ────────────────────────────────────────────────
+   Problem: Discord OAuth always completes on zenithmacros.store, so
+   localStorage["zdash_tok"] ends up in the production origin.  localhost:3000
+   can't read it because localStorage is origin-scoped.
+
+   Solution (zero backend changes):
+   • On localhost  → intercept the "Login with Discord" links and open a
+     popup to production OAuth, passing ?next=/dashboard.html?zdash_dev_relay=1
+     as the post-login destination.
+   • On production → when the page loads inside that popup (opener present)
+     with ?zdash_dev_relay=1, read the token that was just set in this origin's
+     localStorage, postMessage it to the localhost opener, then close.
+   • Back on localhost → receive the message, store token in our localStorage,
+     reload — dashboard.js now finds the token and proceeds normally.
+
+   Production users without window.opener are completely unaffected.
+──────────────────────────────────────────────────────────────────────── */
+(function () {
+  var PROD_ORIGIN = 'https://zenithmacros.store';
+  var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+  // ── PRODUCTION POPUP: relay token back to localhost opener ──────────────
+  if (!isLocal) {
+    var params = new URLSearchParams(location.search);
+    if (params.get('zdash_dev_relay') === '1' && window.opener) {
+      // Signal dashboard.js not to boot the full app in this popup
+      window.__zdash_relay_active = true;
+      var tok = null;
+      try { tok = localStorage.getItem('zdash_tok'); } catch (_) {}
+      try {
+        // postMessage with '*' targetOrigin so any localhost port works
+        window.opener.postMessage({ type: 'zdash_tok', token: tok }, '*');
+      } catch (_) {}
+      // Close the popup — show a brief "Done" message in case close is delayed
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.innerHTML = '<div style="background:#0a0a0b;color:#a78bfa;font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;font-size:15px">Signed in — closing\u2026</div>';
+      });
+      setTimeout(function () { try { window.close(); } catch (_) {} }, 800);
+      return; // skip normal page boot in the popup
+    }
+    return; // not localhost, not a relay — normal production boot
+  }
+
+  // ── LOCALHOST: intercept sign-in links & listen for relay ───────────────
+
+  // 1. Intercept any click on a Discord sign-in link
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest
+      ? e.target.closest('a[href="/api/auth/discord/start"]')
+      : null;
+    if (!a) return;
+    e.preventDefault();
+    var relayNext = encodeURIComponent('/dashboard.html?zdash_dev_relay=1');
+    window.open(
+      PROD_ORIGIN + '/api/auth/discord/start?next=' + relayNext,
+      'zdash_oauth_popup',
+      'width=520,height=760,scrollbars=yes,resizable=yes'
+    );
+  }, true);
+
+  // 2. Listen for the token relayed back from the production popup
+  window.addEventListener('message', function (e) {
+    if (e.origin !== PROD_ORIGIN) return;
+    if (!e.data || e.data.type !== 'zdash_tok') return;
+    if (e.data.token) {
+      try { localStorage.setItem('zdash_tok', e.data.token); } catch (_) {}
+    }
+    // Reload so dashboard.js picks up the token
+    location.reload();
+  });
+})();
+</script>
+<script src="dashboard.js"></script>
+</body>
+</html>

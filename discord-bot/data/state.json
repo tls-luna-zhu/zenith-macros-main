@@ -1,0 +1,63 @@
+{
+  "channels": {
+    "commits": "1480069392380465357",
+    "releases": "1481159568917794977",
+    "transcripts": "1462916670203891717"
+  },
+  "watchers": {
+    "commit": "",
+    "release": "302511104"
+  },
+  "botAccessUserIds": [
+    "1292582729040396351"
+  ],
+  "memberCountVc": {
+    "1462916666945044595": {
+      "channelId": "1488921793216380928",
+      "label": "Members"
+    }
+  },
+  "giveaways": {},
+  "tickets": {
+    "1488921182211149994": {
+      "createdAt": 1775056864026,
+      "claimedBy": "",
+      "status": "open",
+      "urgent": false,
+      "notes": [],
+      "typeMoves": 0,
+      "lastUpdatedAt": 1775056864026
+    },
+    "1488950882363248770": {
+      "createdAt": 1775063945159,
+      "claimedBy": "",
+      "status": "open",
+      "urgent": false,
+      "notes": [],
+      "typeMoves": 0,
+      "lastUpdatedAt": 1775063945159
+    }
+  },
+  "automod": {
+    "enabled": false,
+    "logChannelId": "",
+    "allowedDomains": [
+      "zenithmacros.store",
+      "discord.com"
+    ],
+    "rules": {
+      "links": "off",
+      "invites": "off",
+      "badwords": "off",
+      "caps": "off",
+      "spam": "off"
+    },
+    "badWords": [],
+    "maxMentions": 2,
+    "capsThreshold": 0.78,
+    "capsMinLength": 10,
+    "spamMaxMessages": 4,
+    "spamWindowSec": 30,
+    "timeoutMinutes": 15
+  }
+}

@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZenithMacros</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0e0e10;
+  --s1:        #151517;
+  --s2:        #1c1c1f;
+  --s3:        #232328;
+  --s4:        #2c2c32;
+  --border:    rgba(255,255,255,.07);
+  --border2:   rgba(255,255,255,.04);
+
+  --t0: #f2f2f4;
+  --t1: #9090a0;
+  --t2: #505060;
+  --t3: #303040;
+
+  --accent:    #e8e8f0;
+  --green:     #3dd68c;
+  --red:       #f05e5e;
+  --yellow:    #f0b429;
+  --blue:      #5b8af5;
+
+  --r:  8px;
+  --r2: 12px;
+  --sidebar: 220px;
+
+  font-size: 13px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+
+body {
+  font-family: 'Geist', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--t0);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SCROLLBAR ─────────────────────────────── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--s4); border-radius:4px; }
+
+/* ─── AUTH ──────────────────────────────────── */
+#auth {
+  position:fixed; inset:0; z-index:400;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg);
+}
+
+.auth-wrap {
+  width:380px;
+  animation:fadeUp .4s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:none; }
+}
+
+.auth-logo {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:32px; justify-content:center;
+}
+.auth-icon {
+  width:36px; height:36px; border-radius:10px;
+  background: linear-gradient(145deg, #2a2a32, #1a1a22);
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+}
+.auth-icon svg { width:18px; height:18px; color:var(--t0); }
+.auth-wordmark {
+  font-size:18px; font-weight:700;
+  letter-spacing:-.03em; color:var(--t0);
+}
+
+.auth-card {
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  overflow:hidden;
+}
+.auth-card-body { padding:24px; }
+.auth-label {
+  font-size:11px; font-weight:600;
+  color:var(--t2); letter-spacing:.06em;
+  text-transform:uppercase; margin-bottom:8px;
+}
+.auth-field {
+  display:flex; border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden;
+  background:var(--s2);
+  transition:border-color .15s;
+}
+.auth-field:focus-within { border-color:rgba(255,255,255,.18); }
+.auth-input {
+  flex:1; background:transparent; border:none; outline:none;
+  padding:11px 14px;
+  font-family:'Geist Mono', monospace;
+  font-size:12px; color:var(--t0);
+  letter-spacing:.06em;
+}
+.auth-input::placeholder { color:var(--t2); }
+.auth-input.err { animation:shake .25s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+.auth-submit {
+  padding:0 18px; background:var(--t0);
+  border:none; color:var(--bg);
+  font-family:'Geist', sans-serif;
+  font-size:12px; font-weight:600;
+  cursor:pointer; letter-spacing:-.01em;
+  transition:background .12s;
+  flex-shrink:0;
+}
+.auth-submit:hover { background:var(--t1); }
+
+.auth-err {
+  font-size:11px; color:var(--red);
+  margin-top:8px; display:none;
+}
+.auth-err.show { display:block; }
+
+.auth-progress {
+  height:2px; background:var(--s3);
+}
+.auth-progress-bar {
+  height:100%; width:0%;
+  background:var(--t0);
+  transition:width .9s cubic-bezier(.4,0,.2,1);
+}
+.auth-footer {
+  padding:14px 24px;
+  border-top:1px solid var(--border);
+  font-size:11px; color:var(--t2);
+  display:flex; justify-content:space-between;
+}
+.auth-footer a { color:var(--t1); text-decoration:none; }
+.auth-footer a:hover { color:var(--t0); }
+
+/* ─── APP ───────────────────────────────────── */
+#app { display:none; height:100vh; }
+#app.show { display:flex; flex-direction:column; }
+
+/* ─── TITLEBAR ──────────────────────────────── */
+.titlebar {
+  height:44px; flex-shrink:0;
+  background:var(--s1);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center;
+  padding:0 16px; gap:10px;
+}
+.tb-logo {
+  display:flex; align-items:center; gap:8px;
+  margin-right:4px;
+}
+.tb-icon {
+  width:22px; height:22px; border-radius:6px;
+  background:linear-gradient(145deg,#2a2a32,#1a1a22);
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+}
+.tb-icon svg { width:12px; height:12px; color:var(--t0); }
+.tb-name {
+  font-size:13px; font-weight:700;
+  letter-spacing:-.02em; color:var(--t0);
+}
+.tb-divider {
+  width:1px; height:18px;
+  background:var(--border); flex-shrink:0;
+}
+.tb-pill {
+  font-size:10px; font-weight:600;
+  padding:2px 8px; border-radius:20px;
+  letter-spacing:.02em;
+}
+.pill-basic { background:var(--s3); color:var(--t1); }
+.pill-pro   { background:rgba(93,210,140,.1); color:var(--green); border:1px solid rgba(93,210,140,.2); }
+
+.tb-spacer { flex:1; }
+
+.mc-status {
+  display:flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:20px;
+  background:var(--s2); border:1px solid var(--border);
+  cursor:pointer; transition:all .12s;
+  font-size:11px; font-weight:500; color:var(--t1);
+}
+.mc-status:hover { border-color:rgba(255,255,255,.12); color:var(--t0); }
+.mc-status.on { background:rgba(61,214,140,.06); border-color:rgba(61,214,140,.2); color:var(--green); }
+.mc-dot { width:6px; height:6px; border-radius:50%; background:var(--t3); transition:all .2s; flex-shrink:0; }
+.mc-status.on .mc-dot { background:var(--green); box-shadow:0 0 6px var(--green); }
+
+.wm-btns { display:flex; gap:6px; margin-left:8px; }
+.wm { width:11px; height:11px; border-radius:50%; cursor:pointer; opacity:.5; transition:opacity .1s; }
+.wm:hover { opacity:1; }
+.wm-r { background:#ff5f57; }
+.wm-y { background:#febc2e; }
+.wm-g { background:#28c840; }
+
+/* ─── BANNERS ───────────────────────────────── */
+.banner {
+  display:none; flex-shrink:0;
+  align-items:center; gap:8px;
+  padding:7px 20px; font-size:11px; font-weight:500;
+}
+#chat-banner { background:rgba(240,180,41,.06); border-bottom:1px solid rgba(240,180,41,.14); color:var(--yellow); }
+#focus-banner { background:rgba(240,94,94,.06); border-bottom:1px solid rgba(240,94,94,.14); color:var(--red); }
+.ban-dot { width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.ban-sp { flex:1; }
+.ban-timer { font-family:'Geist Mono',monospace; font-size:11px; }
+.ban-btn {
+  padding:3px 10px; border-radius:5px;
+  border:1px solid rgba(255,255,255,.1);
+  background:transparent; color:inherit;
+  font-family:'Geist',sans-serif; font-size:10px;
+  font-weight:600; cursor:pointer; transition:background .1s;
+}
+.ban-btn:hover { background:rgba(255,255,255,.06); }
+
+/* ─── SHELL ─────────────────────────────────── */
+.shell { flex:1; display:flex; overflow:hidden; }
+
+/* ─── SIDEBAR ───────────────────────────────── */
+.sidebar {
+  width:var(--sidebar); flex-shrink:0;
+  background:var(--s1);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  padding:8px 8px 12px;
+  overflow:hidden;
+}
+
+.nav-section {
+  font-size:10px; font-weight:600;
+  color:var(--t2); letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:12px 8px 4px;
+}
+.nav-section:first-of-type { padding-top:4px; }
+
+.nav-item {
+  display:flex; align-items:center; gap:9px;
+  padding:7px 10px; border-radius:var(--r);
+  cursor:pointer; font-size:13px; font-weight:500;
+  color:var(--t1); transition:all .1s;
+  position:relative; margin-bottom:1px;
+  border:1px solid transparent;
+}
+.nav-item svg { width:14px; height:14px; flex-shrink:0; opacity:.7; }
+.nav-item:hover { background:var(--s2); color:var(--t0); }
+.nav-item:hover svg { opacity:1; }
+.nav-item.active {
+  background:var(--s2);
+  color:var(--t0);
+  border-color:var(--border);
+}
+.nav-item.active svg { opacity:1; }
+.nav-badge {
+  margin-left:auto;
+  font-size:10px; font-weight:600;
+  color:var(--green);
+  font-family:'Geist Mono',monospace;
+}
+.nav-lock { margin-left:auto; color:var(--t3); }
+.nav-item.locked { opacity:.5; cursor:default; }
+.nav-item.locked:hover { background:transparent; color:var(--t1); }
+
+.sidebar-spacer { flex:1; }
+
+.sidebar-footer {
+  padding:8px 8px 0;
+  border-top:1px solid var(--border);
+}
+.sf-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:5px 2px;
+  font-size:11px; color:var(--t2);
+}
+.sf-row span { font-family:'Geist Mono',monospace; font-size:10px; color:var(--t1); }
+.sf-row .ok { color:var(--green); }
+
+/* ─── MAIN ──────────────────────────────────── */
+.main {
+  flex:1; overflow-y:auto;
+  background:var(--bg);
+  display:flex; flex-direction:column;
+}
+
+.page { display:none; }
+.page.active { display:block; }
+
+/* page header */
+.ph {
+  padding:24px 28px 0;
+  margin-bottom:20px;
+}
+.ph-title {
+  font-size:20px; font-weight:700;
+  letter-spacing:-.03em; color:var(--t0);
+  margin-bottom:3px;
+}
+.ph-sub { font-size:12px; color:var(--t1); }
+
+/* ─── DETECTION BAR ─────────────────────────── */
+.det {
+  margin:0 28px 18px;
+  display:flex; align-items:center; gap:12px;
+  padding:10px 14px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r);
+}
+.det-led {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--s4); flex-shrink:0; transition:all .25s;
+}
+.det-led.on { background:var(--green); box-shadow:0 0 8px var(--green); }
+.det-text { font-size:11px; color:var(--t1); }
+.det-val { font-size:11px; font-weight:600; color:var(--t0); }
+.det-sp { flex:1; }
+.det-mc { font-family:'Geist Mono',monospace; font-size:10px; color:var(--t2); }
+.det-mc.on { color:var(--green); }
+
+/* active chips */
+.chips {
+  margin:0 28px 18px;
+  display:flex; flex-wrap:wrap; gap:5px; min-height:24px; align-items:center;
+}
+.chip {
+  display:flex; align-items:center; gap:5px;
+  padding:3px 9px; border-radius:20px;
+  font-size:11px; font-weight:500;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  color:var(--t0);
+  animation:chipIn .15s ease both;
+}
+@keyframes chipIn { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:none} }
+.chip-dot { width:5px; height:5px; border-radius:50%; background:var(--green); }
+.chip-none { font-size:11px; color:var(--t2); font-style:italic; }
+
+/* profile strip */
+.pstrip {
+  margin:0 28px 16px;
+  display:flex; align-items:center; gap:10px;
+}
+.pstrip-label { font-size:11px; color:var(--t2); font-weight:500; }
+.ptabs { display:flex; gap:2px; }
+.ptab {
+  padding:4px 10px; border-radius:6px;
+  font-size:11px; font-weight:500;
+  color:var(--t1); cursor:pointer; transition:all .1s;
+}
+.ptab:hover { background:var(--s2); color:var(--t0); }
+.ptab.active { background:var(--s2); color:var(--t0); border:1px solid var(--border); }
+.ptab-add {
+  width:24px; height:24px; border-radius:6px;
+  border:1px dashed var(--border);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--t2); font-size:15px;
+  transition:all .1s;
+}
+.ptab-add:hover { border-color:rgba(255,255,255,.15); color:var(--t1); }
+
+/* section label */
+.sect {
+  font-size:11px; font-weight:600;
+  color:var(--t2); letter-spacing:.06em;
+  text-transform:uppercase;
+  display:flex; align-items:center; gap:10px;
+  margin:0 28px 10px;
+}
+.sect::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ─── MACRO CARDS ───────────────────────────── */
+.mgrid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:8px; padding:0 28px; margin-bottom:8px;
+}
+
+.mcard {
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  overflow:hidden;
+  transition:border-color .15s;
+}
+.mcard:hover { border-color:rgba(255,255,255,.11); }
+.mcard.on { border-color:rgba(61,214,140,.2); }
+
+.mc-top {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 14px 11px;
+  border-bottom:1px solid var(--border2);
+}
+.mc-badge {
+  font-family:'Geist Mono',monospace;
+  font-size:9px; font-weight:500;
+  padding:2px 7px; border-radius:5px;
+  background:var(--s3); color:var(--t1);
+  letter-spacing:.04em; flex-shrink:0;
+  transition:all .15s;
+}
+.mcard.on .mc-badge {
+  background:rgba(61,214,140,.1);
+  color:var(--green);
+}
+.mc-info { flex:1; min-width:0; }
+.mc-name {
+  font-size:13px; font-weight:600;
+  letter-spacing:-.01em; color:var(--t0);
+}
+.mc-desc {
+  font-size:11px; color:var(--t1);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  margin-top:1px;
+}
+.mc-tag {
+  font-size:9px; font-weight:600;
+  padding:2px 6px; border-radius:4px;
+  letter-spacing:.04em; flex-shrink:0;
+}
+.mc-tag-new { background:rgba(61,214,140,.08); color:var(--green); border:1px solid rgba(61,214,140,.18); }
+
+/* toggle */
+.tog {
+  width:32px; height:18px; border-radius:9px;
+  background:var(--s4); border:1px solid var(--border);
+  position:relative; cursor:pointer; flex-shrink:0;
+  transition:all .18s;
+}
+.tog::after {
+  content:''; position:absolute;
+  width:12px; height:12px; border-radius:50%;
+  background:var(--t2); top:2px; left:2px; transition:all .18s;
+}
+.tog.on { background:var(--green); border-color:var(--green); }
+.tog.on::after { background:#fff; transform:translateX(14px); }
+
+.mc-body { padding:11px 14px 13px; display:flex; flex-direction:column; gap:8px; }
+
+.field {
+  display:flex; align-items:center; justify-content:space-between;
+}
+.flabel { font-size:11px; color:var(--t1); }
+.fnote {
+  font-size:11px; color:var(--t1);
+  line-height:1.65; width:100%;
+}
+.fi {
+  font-family:'Geist Mono',monospace;
+  font-size:10px; background:var(--s2);
+  border:1px solid var(--border); border-radius:6px;
+  padding:4px 10px; color:var(--t0);
+  width:72px; text-align:center; outline:none;
+  cursor:pointer; transition:border-color .12s;
+}
+.fi:hover, .fi:focus { border-color:rgba(255,255,255,.18); }
+.fi[type=number] { -moz-appearance:textfield; }
+.fi[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+
+/* ─── SETTINGS ──────────────────────────────── */
+.settings-wrap { padding:0 28px 28px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+.sblock {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r2); overflow:hidden; position:relative;
+}
+.sblock.full { grid-column:1/-1; }
+.sblock-title {
+  padding:10px 16px;
+  border-bottom:1px solid var(--border);
+  font-size:11px; font-weight:600;
+  color:var(--t2); letter-spacing:.06em; text-transform:uppercase;
+}
+.srow {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 16px; border-bottom:1px solid var(--border2);
+}
+.srow:last-child { border-bottom:none; }
+.srow-main { font-size:13px; font-weight:500; color:var(--t0); letter-spacing:-.01em; }
+.srow-sub  { font-size:11px; color:var(--t1); margin-top:1px; }
+.stog {
+  width:28px; height:16px; border-radius:8px;
+  background:var(--s4); border:1px solid var(--border);
+  position:relative; cursor:pointer; flex-shrink:0; transition:all .18s;
+}
+.stog::after {
+  content:''; position:absolute;
+  width:10px; height:10px; border-radius:50%;
+  background:var(--t2); top:2px; left:2px; transition:all .16s;
+}
+.stog.on { background:var(--green); border-color:var(--green); }
+.stog.on::after { background:#fff; transform:translateX(12px); }
+
+.sblock.pro-locked { pointer-events:none; }
+.sblock.pro-locked::after {
+  content:''; position:absolute; inset:0;
+  background:rgba(14,14,16,.72);
+  backdrop-filter:blur(2px);
+  border-radius:var(--r2); z-index:2;
+}
+.sblock-locked-badge {
+  display:none; position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%); z-index:3; pointer-events:all;
+  flex-direction:column; align-items:center; gap:6px; text-align:center;
+}
+.sblock.pro-locked .sblock-locked-badge { display:flex; }
+.slb-title { font-size:12px; font-weight:600; color:var(--t0); }
+.slb-sub { font-size:11px; color:var(--t1); }
+.slb-btn {
+  padding:5px 14px; background:var(--t0); border:none;
+  border-radius:7px; color:var(--bg);
+  font-family:'Geist',sans-serif; font-size:12px; font-weight:600;
+  cursor:pointer; transition:background .1s; margin-top:2px;
+}
+.slb-btn:hover { background:var(--t1); }
+
+/* ─── OPTIMIZER ─────────────────────────────── */
+.opt-wrap { padding:0 28px 28px; }
+
+.opt-hero {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r2); padding:18px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:18px;
+}
+.opt-hero-info {}
+.opt-hero-title { font-size:15px; font-weight:700; letter-spacing:-.02em; margin-bottom:3px; }
+.opt-hero-sub { font-size:11px; color:var(--t1); line-height:1.6; max-width:320px; }
+.opt-hero-stats { display:flex; align-items:center; gap:8px; margin-top:8px; }
+.opt-stat { font-size:11px; color:var(--t1); display:flex; align-items:center; gap:5px; }
+.opt-stat-dot { width:5px; height:5px; border-radius:50%; background:var(--s4); }
+.opt-stat-dot.on { background:var(--green); }
+.opt-hero-actions { display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0; }
+.opt-apply {
+  padding:8px 18px; background:var(--t0); border:none;
+  border-radius:8px; color:var(--bg);
+  font-family:'Geist',sans-serif; font-size:12px; font-weight:600;
+  cursor:pointer; white-space:nowrap; transition:all .12s;
+}
+.opt-apply:hover { background:var(--t1); }
+.opt-apply.applied { background:rgba(61,214,140,.1); color:var(--green); border:1px solid rgba(61,214,140,.25); }
+.opt-revert {
+  font-size:11px; color:var(--t2); background:none; border:none;
+  cursor:pointer; font-family:'Geist',sans-serif;
+  text-decoration:underline; text-underline-offset:2px; transition:color .1s;
+}
+.opt-revert:hover { color:var(--t1); }
+
+.opt-prog { height:2px; background:var(--s2); border-radius:1px; margin-bottom:14px; display:none; overflow:hidden; }
+.opt-prog.show { display:block; }
+.opt-prog-fill { height:100%; background:var(--t0); width:0%; transition:width .5s ease; border-radius:1px; }
+
+.opt-cat { margin-bottom:14px; }
+.opt-cat-label { font-size:11px; font-weight:600; color:var(--t2); letter-spacing:.06em; text-transform:uppercase; display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.opt-cat-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.opt-row {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r); margin-bottom:4px; cursor:pointer;
+  transition:all .12s;
+}
+.opt-row:hover { border-color:rgba(255,255,255,.1); }
+.opt-row.active { border-color:rgba(61,214,140,.22); background:rgba(61,214,140,.03); }
+.opt-icon {
+  width:32px; height:32px; border-radius:8px;
+  background:var(--s2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s;
+}
+.opt-row.active .opt-icon { background:rgba(61,214,140,.08); border-color:rgba(61,214,140,.18); }
+.opt-icon svg { width:14px; height:14px; color:var(--t1); }
+.opt-row.active .opt-icon svg { color:var(--green); }
+.opt-info { flex:1; }
+.opt-name { font-size:12px; font-weight:600; letter-spacing:-.01em; }
+.opt-desc { font-size:11px; color:var(--t1); margin-top:1px; }
+.opt-impact { font-size:9px; font-weight:600; padding:2px 7px; border-radius:4px; flex-shrink:0; }
+.opt-impact.high { background:rgba(61,214,140,.07); color:var(--green); }
+.opt-impact.med  { background:rgba(240,180,41,.07); color:var(--yellow); }
+
+/* ─── PROFILES ──────────────────────────────── */
+.profiles-grid { padding:0 28px; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.prf {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r2); padding:16px; cursor:pointer; transition:all .12s;
+}
+.prf:hover { border-color:rgba(255,255,255,.1); }
+.prf.active { border-color:rgba(61,214,140,.22); }
+.prf-n { font-family:'Geist Mono',monospace; font-size:22px; color:var(--t3); line-height:1; margin-bottom:8px; }
+.prf.active .prf-n { color:rgba(61,214,140,.4); }
+.prf-name { font-size:13px; font-weight:700; letter-spacing:-.01em; margin-bottom:2px; }
+.prf-meta { font-size:11px; color:var(--t1); margin-bottom:8px; }
+.prf-badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:4px; display:inline-block; }
+.prf-badge-active { background:rgba(61,214,140,.08); color:var(--green); }
+.prf-badge-saved  { background:var(--s3); color:var(--t1); }
+
+/* ─── THEMES ────────────────────────────────── */
+.themes-grid { padding:0 28px; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.tcard {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r2); padding:16px; cursor:pointer; transition:all .14s;
+  position:relative; overflow:hidden;
+}
+.tcard::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--tc); opacity:0; transition:opacity .14s;
+}
+.tcard:hover { border-color:rgba(255,255,255,.1); transform:translateY(-1px); }
+.tcard.sel { border-color:rgba(255,255,255,.12); }
+.tcard.sel::after { opacity:1; }
+.tc-dot { width:28px; height:28px; border-radius:8px; background:var(--tc); margin-bottom:10px; }
+.tc-name { font-size:13px; font-weight:700; letter-spacing:-.01em; margin-bottom:2px; }
+.tc-sub  { font-size:11px; color:var(--t1); }
+.tc-check { position:absolute; top:12px; right:12px; width:16px; height:16px; border-radius:50%; background:var(--tc); display:none; align-items:center; justify-content:center; }
+.tc-check svg { width:8px; height:8px; color:#fff; }
+.tcard.sel .tc-check { display:flex; }
+
+/* ─── MESSAGES ──────────────────────────────── */
+.msg-wrap { padding:0 28px; }
+.msg-info {
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r); padding:11px 14px;
+  font-size:11px; color:var(--t1); line-height:1.7; margin-bottom:14px;
+}
+.msg-list { display:flex; flex-direction:column; gap:4px; margin-bottom:10px; }
+.msg-row {
+  display:flex; align-items:center; gap:0;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden; transition:border-color .12s;
+}
+.msg-row:hover { border-color:rgba(255,255,255,.1); }
+.msg-num {
+  font-family:'Geist Mono',monospace; font-size:10px; color:var(--t2);
+  padding:0 12px; border-right:1px solid var(--border);
+  align-self:stretch; display:flex; align-items:center;
+}
+.msg-input {
+  flex:1; background:transparent; border:none;
+  font-size:12px; color:var(--t0); padding:10px 12px; outline:none;
+}
+.msg-input::placeholder { color:var(--t2); }
+.msg-bind {
+  font-family:'Geist Mono',monospace; font-size:10px;
+  color:var(--t1); padding:0 12px; border-left:1px solid var(--border);
+  cursor:pointer; align-self:stretch; display:flex; align-items:center;
+  min-width:64px; justify-content:center; transition:all .1s;
+}
+.msg-bind:hover { background:var(--s2); color:var(--t0); }
+.msg-del {
+  width:36px; border-left:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--t2); align-self:stretch;
+  transition:all .1s;
+}
+.msg-del:hover { background:rgba(240,94,94,.08); color:var(--red); }
+.msg-add {
+  width:100%; padding:9px;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r); color:var(--t1);
+  font-family:'Geist',sans-serif; font-size:12px; font-weight:500;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;
+  transition:all .1s;
+}
+.msg-add:hover { background:var(--s2); color:var(--t0); border-color:rgba(255,255,255,.1); }
+
+/* ─── CHANGELOG ─────────────────────────────── */
+.cl-wrap { padding:0 28px; }
+.cl-entry { background:var(--s1); border:1px solid var(--border); border-radius:var(--r2); overflow:hidden; margin-bottom:8px; }
+.cl-entry-head {
+  display:flex; align-items:center; gap:8px;
+  padding:12px 16px; border-bottom:1px solid var(--border);
+}
+.cl-ver { font-size:14px; font-weight:700; letter-spacing:-.02em; }
+.cl-latest { font-size:10px; font-weight:600; padding:2px 8px; border-radius:4px; background:rgba(61,214,140,.08); color:var(--green); }
+.cl-date { font-family:'Geist Mono',monospace; font-size:10px; color:var(--t2); margin-left:auto; }
+.cl-body { padding:12px 16px; }
+.cl-item {
+  display:flex; align-items:flex-start; gap:8px;
+  padding:5px 0; font-size:12px; color:var(--t1); line-height:1.55;
+  border-bottom:1px solid var(--border2);
+}
+.cl-item:last-child { border-bottom:none; }
+.cl-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.cl-dot.add { background:var(--green); }
+.cl-dot.chg { background:var(--yellow); }
+
+/* ─── UPGRADE GATE ──────────────────────────── */
+.ugate {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:360px; padding:40px 28px; text-align:center;
+}
+.ugate-icon {
+  width:48px; height:48px; border-radius:12px;
+  background:var(--s1); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:16px;
+}
+.ugate-icon svg { width:22px; height:22px; color:var(--t1); }
+.ugate-title { font-size:20px; font-weight:700; letter-spacing:-.03em; margin-bottom:6px; }
+.ugate-sub { font-size:12px; color:var(--t1); line-height:1.65; max-width:340px; margin-bottom:24px; }
+.ugate-cards { display:flex; gap:8px; margin-bottom:24px; }
+.utier {
+  flex:1; padding:16px; background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r2); text-align:left;
+}
+.utier.hl { border-color:rgba(255,255,255,.12); background:var(--s2); }
+.utier-name { font-size:12px; font-weight:700; letter-spacing:-.01em; margin-bottom:3px; }
+.utier-price { font-size:10px; color:var(--t2); margin-bottom:10px; font-family:'Geist Mono',monospace; }
+.utier-feats { font-size:11px; color:var(--t1); line-height:1.8; }
+.utier-feats span { display:block; }
+.utier-feats span::before { content:'✓ '; color:var(--green); }
+.ugate-cta {
+  padding:10px 28px; background:var(--t0); border:none;
+  border-radius:8px; color:var(--bg);
+  font-family:'Geist',sans-serif; font-size:13px; font-weight:600;
+  cursor:pointer; transition:background .12s;
+}
+.ugate-cta:hover { background:var(--t1); }
+.ugate-hint { font-size:10px; color:var(--t2); margin-top:8px; }
+
+/* ─── STATUS BAR ────────────────────────────── */
+.statusbar {
+  height:26px; flex-shrink:0;
+  background:var(--s1); border-top:1px solid var(--border);
+  display:flex; align-items:center; padding:0 16px; gap:16px;
+}
+.sb-item { font-size:10px; color:var(--t2); display:flex; align-items:center; gap:4px; }
+.sb-item span { color:var(--t1); font-family:'Geist Mono',monospace; }
+.sb-item .grn { color:var(--green); }
+.sb-spacer { flex:1; }
+.sb-clock { font-family:'Geist Mono',monospace; font-size:10px; color:var(--t2); }
+
+/* ─── KB MODAL ──────────────────────────────── */
+#kb-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.75); backdrop-filter:blur(8px);
+  z-index:600; align-items:center; justify-content:center;
+}
+#kb-overlay.show { display:flex; }
+.kb-box {
+  background:var(--s2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:28px 40px; text-align:center;
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+  animation:fadeUp .15s ease both;
+}
+.kb-label { font-size:10px; font-weight:600; color:var(--t2); letter-spacing:.06em; text-transform:uppercase; margin-bottom:14px; }
+.kb-mods { display:flex; gap:5px; justify-content:center; margin-bottom:14px; }
+.kb-mod {
+  padding:4px 10px; border-radius:6px; border:1px solid var(--border);
+  background:var(--s1); font-size:10px; font-weight:500;
+  color:var(--t1); cursor:pointer; transition:all .1s; user-select:none;
+}
+.kb-mod:hover { border-color:rgba(255,255,255,.12); color:var(--t0); }
+.kb-mod.active { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.2); color:var(--t0); }
+.kb-key {
+  display:block; font-family:'Geist Mono',monospace;
+  font-size:44px; color:var(--t0); line-height:1; margin-bottom:4px;
+}
+.kb-combo { font-family:'Geist Mono',monospace; font-size:11px; color:var(--t2); margin-bottom:10px; min-height:16px; }
+.kb-hint { font-size:10px; color:var(--t3); }
+
+/* ─── CHANGELOG MODAL ───────────────────────── */
+#cl-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.8); backdrop-filter:blur(8px);
+  z-index:700; align-items:center; justify-content:center;
+}
+#cl-modal.show { display:flex; }
+.cl-modal {
+  width:460px; max-height:76vh;
+  background:var(--s1); border:1px solid var(--border);
+  border-radius:var(--r2); overflow:hidden; display:flex; flex-direction:column;
+  animation:fadeUp .2s ease both;
+  box-shadow:0 32px 80px rgba(0,0,0,.55);
+}
+.cl-modal-head {
+  padding:18px 20px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:flex-start; justify-content:space-between; flex-shrink:0;
+}
+.cl-modal-title { font-size:16px; font-weight:700; letter-spacing:-.02em; margin-bottom:3px; }
+.cl-modal-sub { font-size:11px; color:var(--t1); }
+.cl-modal-x {
+  width:24px; height:24px; border-radius:6px;
+  background:transparent; border:none; cursor:pointer;
+  color:var(--t1); font-size:16px; display:flex;
+  align-items:center; justify-content:center; transition:all .1s;
+}
+.cl-modal-x:hover { background:var(--s3); color:var(--t0); }
+.cl-modal-body { padding:16px 20px; overflow-y:auto; flex:1; }
+.cl-modal-body::-webkit-scrollbar { width:3px; }
+.cl-modal-body::-webkit-scrollbar-thumb { background:var(--s4); }
+.cl-modal-foot {
+  padding:12px 20px; border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+}
+.cl-modal-note { font-size:10px; color:var(--t2); }
+.cl-modal-ok {
+  padding:7px 20px; background:var(--t0); border:none;
+  border-radius:7px; color:var(--bg);
+  font-family:'Geist',sans-serif; font-size:12px; font-weight:600;
+  cursor:pointer; transition:background .1s;
+}
+.cl-modal-ok:hover { background:var(--t1); }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth">
+  <div class="auth-wrap">
+    <div class="auth-logo">
+      <div class="auth-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L20 7V17L12 22L4 17V7L12 2Z"/>
+          <path d="M12 8L16 10.5V15.5L12 18L8 15.5V10.5L12 8Z" fill="currentColor" opacity=".2"/>
+        </svg>
+      </div>
+      <span class="auth-wordmark">ZenithMacros</span>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-body">
+        <div class="auth-label">License Key</div>
+        <div class="auth-field">
+          <input class="auth-input" id="key-inp" type="password" placeholder="ZNTH-XXXX-XXXX-XXXX" maxlength="20">
+          <button class="auth-submit" onclick="doAuth()">Activate</button>
+        </div>
+        <div class="auth-err" id="a-err">Invalid license key. Try DEMO for Basic or ZNTH-XXXX for Pro.</div>
+      </div>
+      <div class="auth-progress"><div class="auth-progress-bar" id="a-prog"></div></div>
+      <div class="auth-footer">
+        <span>Need a key?</span>
+        <a href="#">Purchase a license →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <div class="titlebar">
+    <div class="tb-logo">
+      <div class="tb-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L20 7V17L12 22L4 17V7L12 2Z"/>
+        </svg>
+      </div>
+      <span class="tb-name">ZenithMacros</span>
+    </div>
+    <div class="tb-divider"></div>
+    <span class="tb-pill pill-basic" id="tb-tier">Basic</span>
+    <div class="tb-spacer"></div>
+    <div class="mc-status" id="mc-btn" onclick="toggleMc()">
+      <div class="mc-dot" id="mc-dot"></div>
+      <span id="mc-txt">No instance</span>
+    </div>
+    <div class="wm-btns">
+      <div class="wm wm-r"></div>
+      <div class="wm wm-y"></div>
+      <div class="wm wm-g"></div>
+    </div>
+  </div>
+
+  <div class="banner" id="chat-banner">
+    <div class="ban-dot"></div>
+    Macros paused — chat open
+    <span style="color:var(--t2);font-size:11px;">Press Enter or Esc to resume</span>
+    <div class="ban-sp"></div>
+    <span class="ban-timer" id="ban-timer">10s</span>
+    <button class="ban-btn" onclick="resumeMacros()">Resume</button>
+  </div>
+  <div class="banner" id="focus-banner">
+    <div class="ban-dot"></div>
+    Macros suspended — Minecraft is not the active window
+  </div>
+
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="nav-section">Macros</div>
+      <div class="nav-item active" id="ni-crystal" onclick="goTo('crystal',this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1L14 4.5V11.5L8 15L2 11.5V4.5L8 1Z"/><path d="M8 1V15M2 4.5L14 11.5M14 4.5L2 11.5"/></svg>
+        Crystal
+        <span class="nav-badge" id="nb-crystal" style="display:none">0</span>
+      </div>
+      <div class="nav-item" id="ni-sword" onclick="goTo('sword',this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L11 5M11 5H8M11 5V8"/><path d="M5 11L4 12"/></svg>
+        Sword
+        <span class="nav-badge" id="nb-sword" style="display:none">0</span>
+      </div>
+
+      <div class="nav-section">Tools</div>
+      <div class="nav-item locked" id="ni-optimizer" onclick="goToGated('optimizer',this,'pro')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 2v2M8 12v2M2 8h2M12 8h2M4.1 4.1l1.4 1.4M10.5 10.5l1.4 1.4M4.1 11.9l1.4-1.4M10.5 5.5l1.4-1.4"/></svg>
+        Optimizer
+        <span class="nav-lock" id="opt-lock"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="7" width="8" height="6" rx="1"/><path d="M6 7V5a2 2 0 014 0v2"/></svg></span>
+      </div>
+      <div class="nav-item locked" id="ni-profiles" onclick="goToGated('profiles',this,'pro')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7H11M5 10H9"/></svg>
+        Profiles
+        <span class="nav-lock" id="prof-lock"><svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="7" width="8" height="6" rx="1"/><path d="M6 7V5a2 2 0 014 0v2"/></svg></span>
+      </div>
+      <div class="nav-item" onclick="goTo('messages',this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3.5h12v7H9.5L7 13v-2.5H2V3.5Z"/></svg>
+        Messages
+      </div>
+
+      <div class="nav-section">App</div>
+      <div class="nav-item" onclick="goTo('themes',this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><circle cx="5.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="10.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="8" cy="11" r="1.2" fill="currentColor" stroke="none"/></svg>
+        Themes
+      </div>
+      <div class="nav-item" onclick="goTo('settings',this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5V3M8 13V14.5M1.5 8H3M13 8H14.5M3.4 3.4L4.5 4.5M11.5 11.5L12.6 12.6M3.4 12.6L4.5 11.5M11.5 4.5L12.6 3.4"/></svg>
+        Settings
+      </div>
+      <div class="nav-item" onclick="goTo('changelog',this)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10M3 7h7M3 10h5"/></svg>
+        Changelog
+      </div>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <div class="sf-row">License <span class="ok">Active</span></div>
+        <div class="sf-row">Build <span>v1.0.0</span></div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- ── CRYSTAL ── -->
+      <div class="page active" id="page-crystal">
+        <div class="ph"><div class="ph-title">Crystal</div><div class="ph-sub">End crystal PVP automation</div></div>
+        <div class="det" id="det">
+          <div class="det-led" id="det-led"></div>
+          <span class="det-text">Detection</span>
+          <span class="det-val" id="det-val">—</span>
+          <div class="det-sp"></div>
+          <span class="det-mc" id="det-mc">No Minecraft instance</span>
+        </div>
+        <div class="chips" id="chips"><span class="chip-none" id="chip-none">No macros active</span></div>
+        <div class="pstrip">
+          <span class="pstrip-label">Profile</span>
+          <div class="ptabs">
+            <div class="ptab active" onclick="switchPtab(this)">Default</div>
+            <div class="ptab" onclick="switchPtab(this)">Arena</div>
+            <div class="ptab" onclick="switchPtab(this)">2B2T</div>
+          </div>
+          <div class="ptab-add">+</div>
+        </div>
+        <div class="sect" style="margin-top:4px;">Placement</div>
+        <div class="mgrid">
+          <div class="mcard" id="mc-hc"><div class="mc-top"><div class="mc-badge">HC</div><div class="mc-info"><div class="mc-name">Hit Crystal</div><div class="mc-desc">Place obsidian then hit crystal</div></div><div class="tog" id="t-hc" onclick="toggle('hc','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="50"></div><div class="field"><span class="flabel">Crystal key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Obsidian key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div></div></div>
+          <div class="mcard" id="mc-sa"><div class="mc-top"><div class="mc-badge">SA</div><div class="mc-info"><div class="mc-name">Single Anchor</div><div class="mc-desc">Place and explode one anchor</div></div><div class="tog" id="t-sa" onclick="toggle('sa','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="50"></div><div class="field"><span class="flabel">Anchor key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Glowstone key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div></div></div>
+          <div class="mcard" id="mc-da"><div class="mc-top"><div class="mc-badge">DA</div><div class="mc-info"><div class="mc-name">Double Anchor</div><div class="mc-desc">Place and explode two anchors</div></div><div class="tog" id="t-da" onclick="toggle('da','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="75"></div><div class="field"><span class="flabel">Anchor key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Glowstone key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div></div></div>
+          <div class="mcard" id="mc-ap"><div class="mc-top"><div class="mc-badge">AP</div><div class="mc-info"><div class="mc-name">Anchor Pearl</div><div class="mc-desc">Anchor then pearl for low ground</div></div><div class="tog" id="t-ap" onclick="toggle('ap','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="50"></div><div class="field"><span class="flabel">Anchor key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Pearl key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div></div></div>
+          <div class="mcard" id="mc-kp"><div class="mc-top"><div class="mc-badge">KP</div><div class="mc-info"><div class="mc-name">Key Pearl</div><div class="mc-desc">Pearl instantly then swap back to weapon</div></div><div class="tog" id="t-kp" onclick="toggle('kp','crystal')"></div></div><div class="mc-body"><div class="field"><span class="fnote">One keypress fires your ender pearl and immediately returns to your weapon slot — for quick escapes or gap-closes.</span></div><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Pearl key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Return key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Swap delay (ms)</span><input class="fi" type="number" value="80"></div></div></div>
+        </div>
+        <div class="sect">Totem &amp; Utility</div>
+        <div class="mgrid" style="margin-bottom:28px;">
+          <div class="mcard" id="mc-idh"><div class="mc-top"><div class="mc-badge">IDH</div><div class="mc-info"><div class="mc-name">Inventory D-Hand</div><div class="mc-desc">Presses totem key on inventory open</div></div><div class="tog" id="t-idh" onclick="toggle('idh','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="50"></div><div class="field"><span class="flabel">Totem key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div></div></div>
+          <div class="mcard" id="mc-oht"><div class="mc-top"><div class="mc-badge">OHT</div><div class="mc-info"><div class="mc-name">Offhand Totem</div><div class="mc-desc">Offhands your hotbar totem on press</div></div><div class="tog" id="t-oht" onclick="toggle('oht','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Swap hands key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Totem key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div></div></div>
+          <div class="mcard" id="mc-fxp"><div class="mc-top"><div class="mc-badge">FXP</div><div class="mc-info"><div class="mc-name">Fast XP</div><div class="mc-desc">Right-click spam to level up faster</div></div><div class="tog" id="t-fxp" onclick="toggle('fxp','crystal')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="50"></div></div></div>
+          <div class="mcard" id="mc-pds"><div class="mc-top"><div class="mc-badge">PDS</div><div class="mc-info"><div class="mc-name">Place Delay Sync</div><div class="mc-desc">Auto-adjusts delay based on server TPS</div></div><span class="mc-tag mc-tag-new">New</span><div class="tog" id="t-pds" onclick="toggle('pds','crystal')"></div></div><div class="mc-body"><div class="field"><span class="fnote">Reads server TPS and automatically adjusts crystal placement delay so placements land clean even on laggy servers.</span></div><div class="field"><span class="flabel">Base delay (ms)</span><input class="fi" type="number" value="50"></div><div class="field"><span class="flabel">Max delay (ms)</span><input class="fi" type="number" value="150"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── SWORD ── -->
+      <div class="page" id="page-sword">
+        <div class="ph"><div class="ph-title">Sword</div><div class="ph-sub">Sword PVP automation</div></div>
+        <div class="mgrid" style="padding-bottom:28px;">
+          <div class="mcard" id="mc-wt"><div class="mc-top"><div class="mc-badge">WT</div><div class="mc-info"><div class="mc-name">W-Tap</div><div class="mc-desc">Auto W-tap on every hit for knockback</div></div><div class="tog" id="t-wt" onclick="toggle('wt','sword')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="40"></div></div></div>
+          <div class="mcard" id="mc-sr"><div class="mc-top"><div class="mc-badge">SR</div><div class="mc-info"><div class="mc-name">Sprint Reset</div><div class="mc-desc">Auto sprint-reset for consistent hits</div></div><div class="tog" id="t-sr" onclick="toggle('sr','sword')"></div></div><div class="mc-body"><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Delay (ms)</span><input class="fi" type="number" value="35"></div></div></div>
+          <div class="mcard" id="mc-asb"><div class="mc-top"><div class="mc-badge">ASB</div><div class="mc-info"><div class="mc-name">Auto Shield Breaker</div><div class="mc-desc">Swap to axe, break shield, swap back</div></div><div class="tog" id="t-asb" onclick="toggle('asb','sword')"></div></div><div class="mc-body"><div class="field"><span class="fnote">On press: swaps to axe, attacks to disable enemy shield, then returns to sword — all in one input.</span></div><div class="field"><span class="flabel">Keybind</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Axe key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Sword key</span><input class="fi" value="None" readonly onclick="kbOpen(this)"></div><div class="field"><span class="flabel">Swap delay (ms)</span><input class="fi" type="number" value="50"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── UPGRADE: OPTIMIZER ── -->
+      <div class="page" id="page-upgrade-optimizer">
+        <div class="ugate">
+          <div class="ugate-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+          <div class="ugate-title">Pro required</div>
+          <div class="ugate-sub">The Input &amp; System Optimizer is a Pro feature. Unlock OS-level tweaks that reduce input lag and sharpen macro timing precision.</div>
+          <div class="ugate-cards">
+            <div class="utier"><div class="utier-name" style="color:var(--t1)">Basic</div><div class="utier-price">Current plan</div><div class="utier-feats"><span>All macros</span><span>9 themes</span><span>Messages</span></div></div>
+            <div class="utier hl"><div class="utier-name">Pro</div><div class="utier-price">Upgrade required</div><div class="utier-feats"><span>Everything in Basic</span><span>Input Optimizer</span><span>Profiles</span><span>Chat Pause</span><span>Anti-Detection</span></div></div>
+          </div>
+          <button class="ugate-cta" onclick="openUpgrade()">Upgrade to Pro</button>
+          <div class="ugate-hint">Already have a Pro key? Re-activate in Settings → License</div>
+        </div>
+      </div>
+
+      <!-- ── UPGRADE: PROFILES ── -->
+      <div class="page" id="page-upgrade-profiles">
+        <div class="ugate">
+          <div class="ugate-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+          <div class="ugate-title">Pro required</div>
+          <div class="ugate-sub">Profiles let you save and instantly switch between full macro configurations — different setups for different servers.</div>
+          <div class="ugate-cards">
+            <div class="utier"><div class="utier-name" style="color:var(--t1)">Basic</div><div class="utier-price">Current plan</div><div class="utier-feats"><span>All macros</span><span>9 themes</span><span>Messages</span></div></div>
+            <div class="utier hl"><div class="utier-name">Pro</div><div class="utier-price">Upgrade required</div><div class="utier-feats"><span>Everything in Basic</span><span>Input Optimizer</span><span>Profiles</span><span>Chat Pause</span><span>Anti-Detection</span></div></div>
+          </div>
+          <button class="ugate-cta" onclick="openUpgrade()">Upgrade to Pro</button>
+          <div class="ugate-hint">Already have a Pro key? Re-activate in Settings → License</div>
+        </div>
+      </div>
+
+      <!-- ── OPTIMIZER ── -->
+      <div class="page" id="page-optimizer">
+        <div class="ph"><div class="ph-title">Optimizer</div><div class="ph-sub">OS-level input and system tweaks</div></div>
+        <div class="opt-wrap">
+          <div class="opt-hero">
+            <div class="opt-hero-info">
+              <div class="opt-hero-title">Input &amp; System Optimizer</div>
+              <div class="opt-hero-sub">Low-level Windows tweaks to cut input lag and tighten macro timing. All fully reversible.</div>
+              <div class="opt-hero-stats">
+                <div class="opt-stat"><div class="opt-stat-dot" id="ostat-dot"></div><span id="ostat-txt">Not applied</span></div>
+                <span style="color:var(--t3)">·</span>
+                <div class="opt-stat"><span id="ostat-count">0</span> / 8 active</div>
+              </div>
+            </div>
+            <div class="opt-hero-actions">
+              <button class="opt-apply" id="opt-btn" onclick="applyAllOpts()">⚡ Apply all</button>
+              <button class="opt-revert" id="opt-rev" style="display:none" onclick="revertAllOpts()">Revert all</button>
+            </div>
+          </div>
+          <div class="opt-prog" id="opt-prog"><div class="opt-prog-fill" id="opt-prog-fill"></div></div>
+
+          <div class="opt-cat">
+            <div class="opt-cat-label">Keyboard</div>
+            <div class="opt-row" id="opt-keyrepeat" onclick="toggleOpt('keyrepeat')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="14" height="8" rx="1.5"/><path d="M4 8h8M10 6l2 2-2 2"/></svg></div><div class="opt-info"><div class="opt-name">Key Repeat Delay &amp; Rate</div><div class="opt-desc">Sets delay to minimum, rate to maximum — held keys fire at full speed instantly</div></div><span class="opt-impact high">HIGH</span><div class="stog" id="tog-keyrepeat"></div></div>
+            <div class="opt-row" id="opt-stickykeys" onclick="toggleOpt('stickykeys')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8h8"/><circle cx="4" cy="8" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg></div><div class="opt-info"><div class="opt-name">Disable Sticky &amp; Filter Keys</div><div class="opt-desc">Forces these off — they drop inputs during fast keypresses and interrupt macro sequences</div></div><span class="opt-impact high">HIGH</span><div class="stog" id="tog-stickykeys"></div></div>
+          </div>
+          <div class="opt-cat">
+            <div class="opt-cat-label">Mouse</div>
+            <div class="opt-row" id="opt-accel" onclick="toggleOpt('accel')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L8 3l5 10M5.5 9h5"/></svg></div><div class="opt-info"><div class="opt-name">Disable Mouse Acceleration</div><div class="opt-desc">Turns off Enhance Pointer Precision — true 1:1 raw movement, consistent aim</div></div><span class="opt-impact high">HIGH</span><div class="stog" id="tog-accel"></div></div>
+            <div class="opt-row" id="opt-rawinput" onclick="toggleOpt('rawinput')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 1"/></svg></div><div class="opt-info"><div class="opt-name">Raw Input Enforcement</div><div class="opt-desc">Bypasses Windows mouse smoothing and pointer ballistics entirely</div></div><span class="opt-impact high">HIGH</span><div class="stog" id="tog-rawinput"></div></div>
+          </div>
+          <div class="opt-cat">
+            <div class="opt-cat-label">System</div>
+            <div class="opt-row" id="opt-priority" onclick="toggleOpt('priority')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="9" width="3" height="5" rx="1"/><rect x="6.5" y="6" width="3" height="8" rx="1"/><rect x="11" y="3" width="3" height="11" rx="1"/></svg></div><div class="opt-info"><div class="opt-name">Minecraft Process Priority — High</div><div class="opt-desc">Elevates MC CPU priority when detected — reduces input lag and frame stutters</div></div><span class="opt-impact high">HIGH</span><div class="stog" id="tog-priority"></div></div>
+            <div class="opt-row" id="opt-fullscreen" onclick="toggleOpt('fullscreen')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4"/></svg></div><div class="opt-info"><div class="opt-name">Disable Fullscreen Optimizations</div><div class="opt-desc">Removes hidden latency Windows adds to fullscreen apps — typically 1–3 frames</div></div><span class="opt-impact med">MED</span><div class="stog" id="tog-fullscreen"></div></div>
+            <div class="opt-row" id="opt-timer" onclick="toggleOpt('timer')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="9" r="5"/><path d="M8 4V2M6 2h4M8 9V6"/></svg></div><div class="opt-info"><div class="opt-name">Timer Resolution — 1ms</div><div class="opt-desc">timeBeginPeriod(1) — macro delays fire at exact timing, not 15ms OS windows</div></div><span class="opt-impact high">HIGH</span><div class="stog" id="tog-timer"></div></div>
+            <div class="opt-row" id="opt-network" onclick="toggleOpt('network')"><div class="opt-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><path d="M2.5 8h11M8 2.5A9 9 0 016 8a9 9 0 002 5.5M8 2.5A9 9 0 0110 8a9 9 0 01-2 5.5"/></svg></div><div class="opt-info"><div class="opt-name">Network Buffer Tuning</div><div class="opt-desc">TcpAckFrequency + TCPNoDelay — reduces ping variance on crystal PVP servers</div></div><span class="opt-impact med">MED</span><div class="stog" id="tog-network"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILES ── -->
+      <div class="page" id="page-profiles">
+        <div class="ph" style="display:flex;align-items:flex-start;justify-content:space-between;">
+          <div><div class="ph-title">Profiles</div><div class="ph-sub">Save and switch macro setups</div></div>
+          <button style="margin-top:4px;padding:7px 14px;background:var(--t0);border:none;border-radius:7px;color:var(--bg);font-family:'Geist',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">New profile</button>
+        </div>
+        <div class="profiles-grid">
+          <div class="prf active"><div class="prf-n">01</div><div class="prf-name">Default</div><div class="prf-meta">8 macros · today</div><span class="prf-badge prf-badge-active">Active</span></div>
+          <div class="prf"><div class="prf-n">02</div><div class="prf-name">Arena</div><div class="prf-meta">5 macros · Jan 3</div><span class="prf-badge prf-badge-saved">Saved</span></div>
+          <div class="prf" style="opacity:.4;border-style:dashed;"><div class="prf-n" style="font-size:26px;color:var(--t3);">+</div><div class="prf-name" style="color:var(--t1)">New profile</div><div class="prf-meta">Click to create</div></div>
+        </div>
+      </div>
+
+      <!-- ── MESSAGES ── -->
+      <div class="page" id="page-messages">
+        <div class="ph"><div class="ph-title">Messages</div><div class="ph-sub">Bind preset messages to keys — typed and sent automatically</div></div>
+        <div class="msg-wrap">
+          <div class="msg-info"><strong style="color:var(--t0)">How it works:</strong> Press your bound key → ZenithMacros opens chat, types your message, and hits Enter. Works on any server with no injection.</div>
+          <div class="msg-list" id="msg-list"></div>
+          <button class="msg-add" onclick="addMsg()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg>
+            Add message
+          </button>
+          <div class="sect" style="margin-top:22px;">Typing settings</div>
+          <div class="sblock" style="margin:0 0 28px;">
+            <div class="srow"><div><div class="srow-main">Chat open delay</div><div class="srow-sub">Wait after pressing chat key before typing</div></div><div style="display:flex;align-items:center;gap:6px;"><input class="fi" value="80" type="number" style="width:52px;"><span style="font-size:11px;color:var(--t2);">ms</span></div></div>
+            <div class="srow"><div><div class="srow-main">Keystroke delay</div><div class="srow-sub">Delay between each typed character</div></div><div style="display:flex;align-items:center;gap:6px;"><input class="fi" value="12" type="number" style="width:52px;"><span style="font-size:11px;color:var(--t2);">ms</span></div></div>
+            <div class="srow"><div><div class="srow-main">Random variance</div><div class="srow-sub">Adds slight random delay to look human</div></div><div class="stog on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── THEMES ── -->
+      <div class="page" id="page-themes">
+        <div class="ph"><div class="ph-title">Themes</div><div class="ph-sub">Select an accent color</div></div>
+        <div class="themes-grid" id="tgrid"></div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="page" id="page-settings">
+        <div class="ph"><div class="ph-title">Settings</div><div class="ph-sub">Configure your client</div></div>
+        <div class="settings-wrap">
+
+          <div class="sblock">
+            <div class="sblock-title">License</div>
+            <div class="srow"><div><div class="srow-main">Key</div><div class="srow-sub" id="lic-key">—</div></div><span style="font-size:10px;font-weight:600;color:var(--green);background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.18);padding:2px 8px;border-radius:4px;">Active</span></div>
+            <div class="srow"><div><div class="srow-main">Plan</div><div class="srow-sub">Current license tier</div></div><span class="tb-pill pill-basic" id="lic-plan">Basic</span></div>
+          </div>
+
+          <div class="sblock">
+            <div class="sblock-title">Behavior</div>
+            <div class="srow"><div><div class="srow-main">Panic key</div><div class="srow-sub">Stop all macros instantly</div></div><input class="fi" value="None" readonly onclick="kbOpen(this)" style="width:72px;"></div>
+            <div class="srow"><div><div class="srow-main">Focus lock</div><div class="srow-sub">Suspend macros when MC loses focus</div></div><div class="stog on" id="focus-tog" onclick="toggleFocusLock(this)"></div></div>
+            <div class="srow"><div><div class="srow-main">Stealth minimize key</div><div class="srow-sub">Hides window + taskbar; macros keep running</div></div><input class="fi" id="stealth-key" value="None" readonly onclick="kbOpen(this)" style="width:72px;"></div>
+          </div>
+
+          <div class="sblock pro-locked" id="sblock-chatpause">
+            <div class="sblock-locked-badge">
+              <div class="slb-title">Pro feature</div>
+              <div class="slb-sub">Upgrade to unlock Chat Pause</div>
+              <button class="slb-btn" onclick="openUpgrade()">Upgrade to Pro</button>
+            </div>
+            <div class="sblock-title">Chat Pause</div>
+            <div class="srow"><div><div class="srow-main">Enable chat pause</div><div class="srow-sub">Pause macros when chat opens in-game</div></div><div class="stog on" id="chat-pause-tog"></div></div>
+            <div class="srow"><div><div class="srow-main">Chat key</div><div class="srow-sub">Key you press to open chat</div></div><input class="fi" id="chat-key" value="T" readonly onclick="kbOpen(this)" style="width:72px;"></div>
+            <div class="srow"><div><div class="srow-main">Failsafe timer</div><div class="srow-sub">Auto-resume after N seconds</div></div><div style="display:flex;align-items:center;gap:6px;"><input class="fi" id="chat-timer" value="10" type="number" style="width:52px;"><span style="font-size:11px;color:var(--t2);">s</span></div></div>
+          </div>
+
+          <div class="sblock pro-locked" id="sblock-antid">
+            <div class="sblock-locked-badge">
+              <div class="slb-title">Pro feature</div>
+              <div class="slb-sub">Upgrade to unlock Anti-Detection</div>
+              <button class="slb-btn" onclick="openUpgrade()">Upgrade to Pro</button>
+            </div>
+            <div class="sblock-title">Anti-Detection</div>
+            <div class="srow"><div><div class="srow-main">Stealth mode</div><div class="srow-sub">Adds random variance to all delays</div></div><div class="stog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="srow"><div><div class="srow-main">Input jitter</div><div class="srow-sub">Mimics natural human inconsistencies</div></div><div class="stog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="srow"><div><div class="srow-main">Pattern break</div><div class="srow-sub">Randomly skips 1 in 20 inputs</div></div><div class="stog" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+
+          <div class="sblock">
+            <div class="sblock-title">Minecraft</div>
+            <div class="srow"><div><div class="srow-main">Instance</div><div class="srow-sub" id="mc-path">Not detected</div></div><button style="padding:5px 12px;background:var(--s3);border:1px solid var(--border);border-radius:6px;color:var(--t1);font-family:'Geist',sans-serif;font-size:11px;font-weight:500;cursor:pointer;" onclick="simulateMcLink()">Link</button></div>
+            <div class="srow"><div><div class="srow-main">Launch with Minecraft</div><div class="srow-sub">Auto-open when Minecraft starts</div></div><div class="stog" id="mc-launch-tog" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+
+          <div class="sblock">
+            <div class="sblock-title">App</div>
+            <div class="srow"><div><div class="srow-main">Launch on startup</div><div class="srow-sub">Open with Windows</div></div><div class="stog" onclick="this.classList.toggle('on')"></div></div>
+            <div class="srow"><div><div class="srow-main">Minimize to tray</div><div class="srow-sub">Hide to tray instead of closing</div></div><div class="stog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="srow"><div><div class="srow-main">Show changelog on update</div></div><div class="stog on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="srow"><div><div class="srow-main">Version</div><div class="srow-sub">ZenithMacros v1.0.0</div></div><span style="font-size:10px;font-weight:600;color:var(--green);">Up to date</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── CHANGELOG ── -->
+      <div class="page" id="page-changelog">
+        <div class="ph"><div class="ph-title">Changelog</div><div class="ph-sub">Release history</div></div>
+        <div class="cl-wrap">
+          <div class="cl-entry">
+            <div class="cl-entry-head"><span class="cl-ver">v1.0.0</span><span class="cl-latest">Latest</span><span class="cl-date">Initial release</span></div>
+            <div class="cl-body">
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Crystal macros</strong> — HC, SA, DA, AP, Key Pearl, IDH, OHT, FXP, Place Delay Sync</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Sword macros</strong> — W-Tap, Sprint Reset, Auto Shield Breaker</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Stealth minimize</strong> — bind a key to hide the window and taskbar entry during screenshares</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Focus lock</strong> — macros auto-suspend when Minecraft loses window focus</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Chat Messages</strong> — bind preset messages to keys, typed automatically</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Input Optimizer</strong> (Pro) — 8 OS-level tweaks for input precision</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Profiles, Chat Pause, Anti-Detection</strong> (Pro)</span></div>
+              <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">9 accent themes</strong></span></div>
+              <div class="cl-item"><div class="cl-dot chg"></div><span>Run Minecraft in Borderless Windowed for best focus lock compatibility</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div class="sb-item">Macros active <span id="sb-macros">0</span></div>
+    <div class="sb-item" id="sb-chat" style="display:none;"><span style="color:var(--yellow)">⏸ Chat paused</span></div>
+    <div class="sb-item" id="sb-stealth" style="display:none;"><span class="grn">Hidden</span></div>
+    <div class="sb-spacer"></div>
+    <div class="sb-clock" id="clock">--:--:--</div>
+  </div>
+
+</div>
+
+<!-- KB MODAL -->
+<div id="kb-overlay">
+  <div class="kb-box">
+    <div class="kb-label">Press a key to bind</div>
+    <div class="kb-mods">
+      <div class="kb-mod" id="mod-ctrl" onclick="toggleMod('ctrl')">Ctrl</div>
+      <div class="kb-mod" id="mod-alt" onclick="toggleMod('alt')">Alt</div>
+      <div class="kb-mod" id="mod-shift" onclick="toggleMod('shift')">Shift</div>
+    </div>
+    <span class="kb-key" id="kb-key">_</span>
+    <div class="kb-combo" id="kb-combo"></div>
+    <div class="kb-hint">Esc to cancel · Delete to clear</div>
+  </div>
+</div>
+
+<!-- CHANGELOG MODAL -->
+<div id="cl-modal">
+  <div class="cl-modal">
+    <div class="cl-modal-head">
+      <div>
+        <div class="cl-modal-title">What's new in v1.0.0</div>
+        <div class="cl-modal-sub">Initial release — here's everything that's included</div>
+      </div>
+      <button class="cl-modal-x" onclick="closeChangelog()">×</button>
+    </div>
+    <div class="cl-modal-body">
+      <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Crystal &amp; Sword macro suites</strong> — full PVP automation</span></div>
+      <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Stealth minimize</strong> — hides window and taskbar on keypress, macros keep running</span></div>
+      <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Focus lock</strong> — auto-suspends when Minecraft loses focus</span></div>
+      <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">Input Optimizer, Profiles, Chat Pause, Anti-Detection</strong> (Pro)</span></div>
+      <div class="cl-item"><div class="cl-dot add"></div><span><strong style="color:var(--t0)">9 accent themes</strong></span></div>
+      <div class="cl-item"><div class="cl-dot chg"></div><span>Use Borderless Windowed in Minecraft for best focus lock support</span></div>
+    </div>
+    <div class="cl-modal-foot">
+      <span class="cl-modal-note">Join Discord for updates and support</span>
+      <button class="cl-modal-ok" onclick="closeChangelog()">Got it</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── THEMES ── */
+const THEMES = [
+  {id:'green', name:'Default',  sub:'Acid green',   color:'#3dd68c'},
+  {id:'blue',  name:'Ocean',    sub:'Electric blue', color:'#5b8af5'},
+  {id:'red',   name:'Combat',   sub:'Crimson',       color:'#f05e5e'},
+  {id:'purple',name:'Void',     sub:'Deep purple',   color:'#a855f7'},
+  {id:'gold',  name:'Gold',     sub:'Premium',       color:'#f0b429'},
+  {id:'orange',name:'Lava',     sub:'Burnt orange',  color:'#f97316'},
+  {id:'pink',  name:'Neon',     sub:'Hot pink',      color:'#ec4899'},
+  {id:'cyan',  name:'Arctic',   sub:'Ice cyan',      color:'#22d3ee'},
+  {id:'white', name:'Minimal',  sub:'Pure white',    color:'#e2e2e8'},
+];
+let currentTheme = 'green';
+
+function buildThemes(){
+  const g = document.getElementById('tgrid'); if(!g) return;
+  g.innerHTML = THEMES.map(t => `
+    <div class="tcard${t.id===currentTheme?' sel':''}" id="tc-${t.id}" style="--tc:${t.color}" onclick="applyTheme('${t.id}')">
+      <div class="tc-dot"></div>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-sub">${t.sub}</div>
+      <div class="tc-check">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4 4 6-6"/></svg>
+      </div>
+    </div>`).join('');
+}
+
+function applyTheme(id){
+  const t = THEMES.find(x=>x.id===id); if(!t) return;
+  currentTheme = id;
+  const r = document.documentElement.style;
+  r.setProperty('--green', t.color);
+  document.querySelectorAll('.tcard').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('tc-'+id)?.classList.add('sel');
+  document.querySelectorAll('.tcard').forEach(c=>{ c.style.setProperty('--tc', THEMES.find(x=>x.id===c.id.replace('tc-',''))?.color||t.color); });
+}
+
+/* ── MACROS ── */
+const MACRO_LIST = [
+  {id:'hc', name:'Hit Crystal', page:'crystal'},
+  {id:'sa', name:'Single Anchor', page:'crystal'},
+  {id:'da', name:'Double Anchor', page:'crystal'},
+  {id:'ap', name:'Anchor Pearl', page:'crystal'},
+  {id:'kp', name:'Key Pearl', page:'crystal'},
+  {id:'idh', name:'Inv D-Hand', page:'crystal'},
+  {id:'oht', name:'Offhand Totem', page:'crystal'},
+  {id:'fxp', name:'Fast XP', page:'crystal'},
+  {id:'pds', name:'Place Delay Sync', page:'crystal'},
+  {id:'wt', name:'W-Tap', page:'sword'},
+  {id:'sr', name:'Sprint Reset', page:'sword'},
+  {id:'asb', name:'Shield Breaker', page:'sword'},
+];
+
+function toggle(id){
+  const t = document.getElementById('t-'+id);
+  const c = document.getElementById('mc-'+id);
+  if(!t) return;
+  t.classList.toggle('on');
+  c?.classList.toggle('on', t.classList.contains('on'));
+  updateMacroUI();
+}
+
+function updateMacroUI(){
+  const active = MACRO_LIST.filter(m=>{
+    const t = document.getElementById('t-'+m.id);
+    return t && t.classList.contains('on');
+  });
+  document.getElementById('sb-macros').textContent = active.length;
+
+  // Chips
+  const bar = document.getElementById('chips');
+  const none = document.getElementById('chip-none');
+  if(bar){
+    bar.querySelectorAll('.chip').forEach(c=>c.remove());
+    none.style.display = active.length ? 'none' : 'block';
+    active.forEach(m=>{
+      const el = document.createElement('div');
+      el.className = 'chip';
+      el.innerHTML = `<div class="chip-dot"></div>${m.name}`;
+      bar.appendChild(el);
+    });
+  }
+
+  // Nav badges
+  ['crystal','sword'].forEach(p=>{
+    const n = MACRO_LIST.filter(m=>m.page===p && document.getElementById('t-'+m.id)?.classList.contains('on')).length;
+    const nb = document.getElementById('nb-'+p);
+    if(nb){ nb.textContent=n; nb.style.display=n>0?'block':'none'; }
+  });
+}
+
+function panicAll(){
+  MACRO_LIST.forEach(m=>{
+    document.getElementById('t-'+m.id)?.classList.remove('on');
+    document.getElementById('mc-'+m.id)?.classList.remove('on');
+  });
+  updateMacroUI();
+}
+
+/* ── MC DETECT ── */
+let mcOn = false;
+function toggleMc(){
+  mcOn = !mcOn;
+  const btn = document.getElementById('mc-btn');
+  const dot = document.getElementById('mc-dot');
+  const txt = document.getElementById('mc-txt');
+  const led = document.getElementById('det-led');
+  const val = document.getElementById('det-val');
+  const mc  = document.getElementById('det-mc');
+  if(mcOn){
+    btn.classList.add('on'); txt.textContent='Detected';
+    led.classList.add('on'); val.textContent='Clean'; mc.textContent='Minecraft 1.21.4 · Lunar'; mc.classList.add('on');
+  } else {
+    btn.classList.remove('on'); txt.textContent='No instance';
+    led.classList.remove('on'); val.textContent='—'; mc.textContent='No Minecraft instance'; mc.classList.remove('on');
+  }
+}
+
+/* ── STEALTH MINIMIZE ── */
+let stealthOn = false;
+function activateStealth(){
+  stealthOn = true;
+  document.getElementById('app').style.visibility = 'hidden';
+  document.getElementById('sb-stealth').style.display = 'flex';
+  let r = document.getElementById('stealth-restore');
+  if(!r){
+    r = document.createElement('div');
+    r.id = 'stealth-restore';
+    r.style.cssText = `position:fixed;bottom:18px;right:18px;z-index:9998;
+      background:var(--s2);border:1px solid var(--border);border-radius:10px;
+      padding:10px 16px;font-size:12px;color:var(--t1);cursor:pointer;
+      font-family:'Geist',sans-serif;backdrop-filter:blur(16px);
+      box-shadow:0 8px 32px rgba(0,0,0,.5);`;
+    r.innerHTML = '<strong style="color:var(--t0)">ZenithMacros</strong> is hidden — macros active<br><span style="font-size:10px;color:var(--t2);">Press your stealth key to restore</span>';
+    r.onclick = deactivateStealth;
+    document.body.appendChild(r);
+  }
+}
+function deactivateStealth(){
+  stealthOn = false;
+  document.getElementById('app').style.visibility = '';
+  document.getElementById('sb-stealth').style.display = 'none';
+  document.getElementById('stealth-restore')?.remove();
+}
+
+/* ── FOCUS LOCK ── */
+let focusLock = true;
+function toggleFocusLock(tog){
+  tog.classList.toggle('on');
+  focusLock = tog.classList.contains('on');
+  if(!focusLock) document.getElementById('focus-banner').style.display = 'none';
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(!focusLock) return;
+  document.getElementById('focus-banner').style.display = document.visibilityState !== 'visible' ? 'flex' : 'none';
+});
+
+/* ── AUTH ── */
+document.getElementById('key-inp').addEventListener('keydown', e=>{ if(e.key==='Enter') doAuth(); });
+
+function doAuth(){
+  const v = document.getElementById('key-inp').value.trim().toUpperCase();
+  const inp = document.getElementById('key-inp');
+  const err = document.getElementById('a-err');
+  const prog = document.getElementById('a-prog');
+  if(v==='DEMO' || v==='TEST' || v.startsWith('ZNTH-')){
+    prog.style.width = '65%';
+    setTimeout(()=>{
+      prog.style.width = '100%';
+      setTimeout(()=>{
+        document.getElementById('auth').style.display = 'none';
+        document.getElementById('app').classList.add('show');
+        document.getElementById('lic-key').textContent = v.slice(0,4)+'-••••-••••-••••';
+        userTier = v==='DEMO' ? 'basic' : 'pro';
+        applyTierUI();
+        buildThemes();
+        renderMsgs();
+        startClock();
+        setTimeout(showChangelog, 700);
+      }, 350);
+    }, 800);
+  } else {
+    inp.classList.add('err'); err.classList.add('show');
+    setTimeout(()=>inp.classList.remove('err'), 280);
+  }
+}
+
+/* ── TIERS ── */
+let userTier = 'basic';
+function applyTierUI(){
+  const hasPro = userTier === 'pro';
+  ['tb-tier','lic-plan'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = hasPro ? 'Pro' : 'Basic';
+    el.className = 'tb-pill ' + (hasPro ? 'pill-pro' : 'pill-basic');
+  });
+  const niOpt = document.getElementById('ni-optimizer');
+  const niProf = document.getElementById('ni-profiles');
+  const optLock = document.getElementById('opt-lock');
+  const profLock = document.getElementById('prof-lock');
+  if(hasPro){
+    niOpt?.classList.remove('locked'); niOpt?.setAttribute('onclick',"goTo('optimizer',this)");
+    niProf?.classList.remove('locked'); niProf?.setAttribute('onclick',"goTo('profiles',this)");
+    if(optLock) optLock.style.display='none';
+    if(profLock) profLock.style.display='none';
+  }
+  document.getElementById('sblock-chatpause')?.classList.toggle('pro-locked', !hasPro);
+  document.getElementById('sblock-antid')?.classList.toggle('pro-locked', !hasPro);
+}
+
+function goToGated(id, el, req){
+  if(userTier === 'pro') { goTo(id, el); return; }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-upgrade-'+id)?.classList.add('active');
+}
+
+function openUpgrade(){
+  document.querySelectorAll('.ugate-cta,.slb-btn').forEach(b=>{
+    const o=b.textContent; b.textContent='Opening…';
+    setTimeout(()=>b.textContent=o, 1500);
+  });
+}
+
+/* ── NAV ── */
+function goTo(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id)?.classList.add('active');
+  if(el) el.classList.add('active');
+}
+function switchPtab(el){
+  el.closest('.ptabs').querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── KB MODAL ── */
+let kbTarget = null, kbMods = {ctrl:false,alt:false,shift:false};
+let _msgKb = false, msgKbTarget = null;
+
+function toggleMod(m){
+  kbMods[m]=!kbMods[m];
+  document.getElementById('mod-'+m)?.classList.toggle('active',kbMods[m]);
+  refreshKbCombo('_');
+}
+function refreshKbCombo(k){
+  const parts=[];
+  if(kbMods.ctrl) parts.push('Ctrl');
+  if(kbMods.alt) parts.push('Alt');
+  if(kbMods.shift) parts.push('Shift');
+  if(k&&k!=='_') parts.push(k);
+  const el = document.getElementById('kb-combo');
+  if(el) el.textContent = parts.length>1 ? parts.join(' + ') : '';
+}
+function buildCombo(k){
+  if(k==='None') return 'None';
+  const p=[];
+  if(kbMods.ctrl) p.push('Ctrl');
+  if(kbMods.alt) p.push('Alt');
+  if(kbMods.shift) p.push('Shift');
+  p.push(k); return p.join('+');
+}
+function kbOpen(inp){
+  kbTarget=inp; kbMods={ctrl:false,alt:false,shift:false};
+  ['ctrl','alt','shift'].forEach(m=>document.getElementById('mod-'+m)?.classList.remove('active'));
+  document.getElementById('kb-combo').textContent='';
+  document.getElementById('kb-overlay').classList.add('show');
+  document.getElementById('kb-key').textContent='_';
+}
+
+document.addEventListener('keydown', e=>{
+  const ov = document.getElementById('kb-overlay');
+  if(ov.classList.contains('show')){
+    if(['Control','Alt','Shift','Meta'].includes(e.key)) return;
+    e.preventDefault();
+    if(e.key==='Escape'){ ov.classList.remove('show'); kbTarget=null; _msgKb=false; msgKbTarget=null; return; }
+    const raw = (e.key==='Delete'||e.key==='Backspace') ? 'None'
+      : e.key.length===1 ? e.key.toUpperCase()
+      : e.code.replace('Key','').replace('Digit','');
+    document.getElementById('kb-key').textContent = raw;
+    refreshKbCombo(raw);
+    const final = buildCombo(raw);
+    setTimeout(()=>{
+      if(_msgKb && msgKbTarget){ messages[msgKbTarget.idx].bind=final; msgKbTarget.el.textContent=final; _msgKb=false; msgKbTarget=null; }
+      else if(kbTarget){ kbTarget.value=final; kbTarget=null; }
+      ov.classList.remove('show');
+    }, 280);
+    return;
+  }
+  // stealth key
+  const sk = document.getElementById('stealth-key')?.value;
+  if(sk && sk!=='None'){
+    const p=[];
+    if(e.ctrlKey) p.push('Ctrl');
+    if(e.altKey) p.push('Alt');
+    if(e.shiftKey) p.push('Shift');
+    p.push(e.key.length===1?e.key.toUpperCase():e.code.replace('Key','').replace('Digit',''));
+    if(p.join('+')===sk){ stealthOn?deactivateStealth():activateStealth(); return; }
+  }
+  handleChatKey(e);
+});
+
+/* ── CHAT PAUSE ── */
+let chatPaused=false, chatInterval=null, chatCd=10;
+const chatEnabled=()=>document.getElementById('chat-pause-tog')?.classList.contains('on')??true;
+const getChatKey=()=>(document.getElementById('chat-key')?.value||'T').trim().toUpperCase();
+const getFailsafe=()=>parseInt(document.getElementById('chat-timer')?.value)||10;
+
+function handleChatKey(e){
+  if(!chatEnabled()) return;
+  if(chatPaused){ if(e.key==='Enter'||e.key==='Escape') setTimeout(resumeMacros,80); return; }
+  const k = e.key.length===1 ? e.key.toUpperCase() : e.key.toUpperCase();
+  if(k===getChatKey()) pauseMacros();
+}
+function pauseMacros(){
+  if(chatPaused) return;
+  chatPaused=true; chatCd=getFailsafe();
+  document.getElementById('chat-banner').style.display='flex';
+  document.getElementById('sb-chat').style.display='flex';
+  document.getElementById('ban-timer').textContent=chatCd+'s';
+  chatInterval=setInterval(()=>{
+    chatCd--;
+    const el=document.getElementById('ban-timer');
+    if(el) el.textContent=chatCd+'s';
+    if(chatCd<=0) resumeMacros();
+  },1000);
+}
+function resumeMacros(){
+  if(!chatPaused) return;
+  chatPaused=false; clearInterval(chatInterval); chatInterval=null;
+  document.getElementById('chat-banner').style.display='none';
+  document.getElementById('sb-chat').style.display='none';
+}
+
+/* ── MC LINK ── */
+let mcLinked=false;
+function simulateMcLink(){
+  mcLinked=!mcLinked;
+  const p=document.getElementById('mc-path');
+  if(mcLinked){ p.textContent='C:\\...\\javaw.exe'; p.style.color='var(--green)'; document.getElementById('mc-launch-tog')?.classList.add('on'); }
+  else { p.textContent='Not detected'; p.style.color=''; document.getElementById('mc-launch-tog')?.classList.remove('on'); }
+}
+
+/* ── MESSAGES ── */
+let messages=[{text:'gg',bind:'None'},{text:'good fight',bind:'None'},{text:'/home',bind:'None'}];
+function renderMsgs(){
+  const list=document.getElementById('msg-list'); if(!list) return;
+  list.innerHTML=messages.map((m,i)=>`
+    <div class="msg-row">
+      <div class="msg-num">${String(i+1).padStart(2,'0')}</div>
+      <input class="msg-input" placeholder="Type a message or command…" value="${m.text.replace(/"/g,'&quot;')}" oninput="messages[${i}].text=this.value">
+      <div class="msg-bind" id="mb-${i}" onclick="msgKb(${i},this)">${m.bind}</div>
+      <div class="msg-del" onclick="delMsg(${i})">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l10 10M13 3L3 13"/></svg>
+      </div>
+    </div>`).join('');
+}
+function addMsg(){ messages.push({text:'',bind:'None'}); renderMsgs(); setTimeout(()=>{ const r=document.querySelectorAll('.msg-input'); if(r.length) r[r.length-1].focus(); },40); }
+function delMsg(i){ if(messages.length<=1) return; messages.splice(i,1); renderMsgs(); }
+function msgKb(i,el){ msgKbTarget={idx:i,el}; kbTarget=null; _msgKb=true; kbMods={ctrl:false,alt:false,shift:false}; ['ctrl','alt','shift'].forEach(m=>document.getElementById('mod-'+m)?.classList.remove('active')); document.getElementById('kb-combo').textContent=''; document.getElementById('kb-overlay').classList.add('show'); document.getElementById('kb-key').textContent='_'; }
+
+/* ── OPTIMIZER ── */
+const OPT_KEYS=['keyrepeat','stickykeys','accel','rawinput','priority','fullscreen','timer','network'];
+const optState={};
+OPT_KEYS.forEach(k=>optState[k]=false);
+
+function toggleOpt(id){
+  optState[id]=!optState[id];
+  document.getElementById('opt-'+id)?.classList.toggle('active',optState[id]);
+  document.getElementById('tog-'+id)?.classList.toggle('on',optState[id]);
+  syncOptStatus();
+}
+function syncOptStatus(){
+  const n=OPT_KEYS.filter(k=>optState[k]).length;
+  document.getElementById('ostat-count').textContent=n;
+  const dot=document.getElementById('ostat-dot');
+  const txt=document.getElementById('ostat-txt');
+  const btn=document.getElementById('opt-btn');
+  const rev=document.getElementById('opt-rev');
+  const applied = n===OPT_KEYS.length;
+  if(dot){ dot.className='opt-stat-dot'+(n>0?' on':''); }
+  if(txt) txt.textContent = applied?'All applied':n>0?`${n} applied`:'Not applied';
+  if(btn){ btn.classList.toggle('applied',applied); btn.textContent=applied?'✓ Applied':'⚡ Apply all'; }
+  if(rev) rev.style.display=n>0?'block':'none';
+}
+function applyAllOpts(){
+  const prog=document.getElementById('opt-prog'); const fill=document.getElementById('opt-prog-fill');
+  if(prog) prog.classList.add('show'); if(fill) fill.style.width='0%';
+  OPT_KEYS.forEach((k,i)=>setTimeout(()=>{
+    optState[k]=true;
+    document.getElementById('opt-'+k)?.classList.add('active');
+    document.getElementById('tog-'+k)?.classList.add('on');
+    if(fill) fill.style.width=Math.round(((i+1)/OPT_KEYS.length)*100)+'%';
+    if(i===OPT_KEYS.length-1){ syncOptStatus(); setTimeout(()=>prog.classList.remove('show'),700); }
+  },i*100));
+}
+function revertAllOpts(){
+  OPT_KEYS.forEach(k=>{ optState[k]=false; document.getElementById('opt-'+k)?.classList.remove('active'); document.getElementById('tog-'+k)?.classList.remove('on'); });
+  syncOptStatus();
+}
+
+/* ── CHANGELOG MODAL ── */
+function showChangelog(){ document.getElementById('cl-modal').classList.add('show'); }
+function closeChangelog(){ document.getElementById('cl-modal').classList.remove('show'); }
+
+/* ── CLOCK ── */
+function startClock(){
+  const tick=()=>{
+    const n=new Date();
+    const s=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+    document.getElementById('clock').textContent=s;
+  }; tick(); setInterval(tick,1000);
+}
+</script>
+</body>
+</html>

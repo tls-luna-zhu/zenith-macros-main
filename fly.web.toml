@@ -1,0 +1,32 @@
+app = "zenith-macros-web"
+primary_region = "ord"
+
+[build]
+  dockerfile = "website/Dockerfile"
+
+[build.args]
+  API_PROXY_TARGET = "https://zenith-license.fly.dev"
+
+[env]
+  PORT = "3000"
+  HOSTNAME = "::"
+  API_PROXY_TARGET = "https://zenith-license.fly.dev"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "30s"
+    method = "get"
+    path = "/index.html"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

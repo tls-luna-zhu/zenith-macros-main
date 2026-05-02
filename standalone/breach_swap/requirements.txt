@@ -1,0 +1,4 @@
+keyboard>=0.13.5
+mouse>=0.7.1
+colorama>=0.4.6
+requests>=2.31.0

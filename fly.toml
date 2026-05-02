@@ -1,0 +1,34 @@
+# fly.toml app configuration file generated for zenith-macros-web on 2026-04-07T11:58:19-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'zenith-macros-web'
+primary_region = 'ord'
+
+[build]
+  dockerfile = 'website/Dockerfile'
+
+[env]
+  API_PROXY_TARGET = 'https://zenith-license.fly.dev'
+  HOSTNAME = '::'
+  PORT = '3000'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '30s'
+    method = 'get'
+    path = '/index.html'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '512mb'

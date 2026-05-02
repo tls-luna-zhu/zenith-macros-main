@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zenith Dashboard</title>
+  <meta name="theme-color" content="#8b5cf6" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site.css" />
+</head>
+<body class="dashboard-page">
+  <div class="bg-ambience" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+    <div class="bg-particles" id="bg-particles"></div>
+  </div>
+
+  <header class="topnav shell" id="topnav">
+    <a href="/" class="brand magnetic">
+      <img src="/favicon.png" alt="Zenith" class="brand-logo" />
+      <span>Zenith Dashboard</span>
+    </a>
+    <div class="topactions">
+      <a class="btn btn-ghost magnetic with-ico" href="/"><span>🌐</span>Website</a>
+      <button class="btn btn-primary magnetic with-ico" id="logout-btn"><span>⎋</span>Logout</button>
+    </div>
+  </header>
+
+  <main class="dashboard-root">
+    <div class="dashboard-layout">
+      <aside class="shell dashboard-side reveal">
+        <div class="dash-user">
+          <img id="user-avatar" src="/favicon.png" alt="avatar" />
+          <div>
+            <strong id="user-name">Not connected</strong>
+            <span class="muted" id="user-email">Connect with Discord to continue.</span>
+          </div>
+        </div>
+
+        <div class="status-chip off" id="account-chip">Not Authenticated</div>
+
+        <div class="dash-auth">
+          <a class="btn btn-primary magnetic" id="login-btn" href="/auth/discord/start?next=%2Fdashboard.html">Login</a>
+        </div>
+
+        <nav class="dashboard-menu">
+          <button class="on" data-tab="overview"><span>👤</span>Account Overview</button>
+          <button data-tab="subscription"><span>💳</span>Subscription</button>
+          <button data-tab="license"><span>🔑</span>License</button>
+          <button data-tab="actions"><span>⚙</span>Actions</button>
+        </nav>
+      </aside>
+
+      <section class="dashboard-main">
+        <div class="dashboard-highlights reveal">
+          <article class="highlight-card">
+            <h4>Plan</h4>
+            <p id="hl-plan">-</p>
+          </article>
+          <article class="highlight-card">
+            <h4>Status</h4>
+            <p id="hl-status">-</p>
+          </article>
+          <article class="highlight-card">
+            <h4>Time Remaining</h4>
+            <p id="hl-remaining">-</p>
+          </article>
+          <article class="highlight-card">
+            <h4>HWID</h4>
+            <p id="hl-hwid">-</p>
+          </article>
+        </div>
+
+        <article class="shell dashboard-panel reveal panel-enter" id="panel-overview">
+          <h2>Account Overview</h2>
+          <div class="panel-grid">
+            <div class="stat-card"><h4>Plan</h4><p id="ov-plan">-</p></div>
+            <div class="stat-card"><h4>Status</h4><p id="ov-status">-</p></div>
+            <div class="stat-card"><h4>License Key</h4><p id="ov-key" class="mono">-</p></div>
+            <div class="stat-card"><h4>HWID</h4><p id="ov-hwid" class="mono">Unbound</p></div>
+          </div>
+        </article>
+
+        <article class="shell dashboard-panel hidden" id="panel-subscription">
+          <h2>Subscription Info</h2>
+          <div class="kv-list">
+            <div class="kv"><span>Current plan</span><strong id="sub-plan">-</strong></div>
+            <div class="kv"><span>Next billing date</span><strong id="sub-next">-</strong></div>
+            <div class="kv"><span>Time remaining</span><strong id="sub-remaining">-</strong></div>
+          </div>
+          <div class="dashboard-actions">
+            <button class="btn btn-ghost magnetic with-ico" id="upgrade-monthly-btn"><span>↗</span>Upgrade Monthly</button>
+            <button class="btn btn-ghost magnetic with-ico" id="upgrade-lifetime-btn"><span>★</span>Upgrade Lifetime</button>
+            <button class="btn btn-primary magnetic with-ico" id="cancel-btn"><span>✕</span>Cancel Subscription</button>
+          </div>
+        </article>
+
+        <article class="shell dashboard-panel hidden" id="panel-license">
+          <h2>License Info</h2>
+          <div class="kv-list">
+            <div class="kv"><span>License key</span><strong id="lic-key" class="mono">-</strong></div>
+            <div class="kv"><span>Status</span><strong id="lic-status">-</strong></div>
+            <div class="kv"><span>HWID</span><strong id="lic-hwid" class="mono">-</strong></div>
+            <div class="kv"><span>Expires</span><strong id="lic-exp">-</strong></div>
+          </div>
+          <div class="licenses" id="license-list"></div>
+        </article>
+
+        <article class="shell dashboard-panel hidden" id="panel-actions">
+          <h2>Actions</h2>
+          <div class="dashboard-actions">
+            <button class="btn btn-primary magnetic with-ico" id="download-latest-btn"><span>⬇</span>Download Latest</button>
+            <button class="btn btn-ghost magnetic with-ico" id="copy-key-btn"><span>⧉</span>Copy Key</button>
+            <button class="btn btn-ghost magnetic with-ico" id="reveal-key-btn"><span>👁</span>Reveal Key</button>
+            <button class="btn btn-ghost magnetic with-ico" id="reset-hwid-btn"><span>↺</span>Reset HWID</button>
+            <a class="btn btn-ghost magnetic with-ico" href="https://discord.gg/tbT5Zjg7dE"><span>🛟</span>Manage Account</a>
+          </div>
+          <p class="dash-note" id="download-meta">Latest release: loading...</p>
+          <p class="dash-note" id="action-status">-</p>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script src="/dashboard.js"></script>
+</body>
+</html>
