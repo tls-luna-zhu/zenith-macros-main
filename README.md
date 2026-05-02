@@ -1,7 +1,5 @@
-# Zenith Macros (beta)
+Terrible Vibe coded macros, owner charges outragous amounts of cash monies for it, not worth it
 
-Local development for the marketing site and license API is documented in **[LOCAL_DEV.md](LOCAL_DEV.md)** (ports, `.env`, Discord OAuth, and commands).
+full source code for website and macro with the auth removed
 
-Backend environment template: `backend/.env.example` → copy to `backend/.env`.
-
-**Local browser preview** of the client UI is in **`website/`** (copy of `renderer/` + browser stubs). The real app shell is **`renderer/`** (Tauri).
+wallahi ts sucks
